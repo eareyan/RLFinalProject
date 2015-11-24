@@ -34,6 +34,7 @@ public class MDP {
 	TerminalFunction tf;
 	SimpleHashableStateFactory hashFactory;
 	Random randomGenerator;
+	private static boolean verbose = true;
 	
 	public MDP(){
 		this.dg = new GraphDefinedDomain(10);
@@ -69,21 +70,28 @@ public class MDP {
 	protected double[] createDistribution(){
 		
 		double[] distribution = new double[10];
-		/* Initialize the distribution to all zeros*/
+		int[] entriesSoFar = new int[10];
+		/* Initialize the distribution and entriesSoFar to all zeros*/
 		for(int i=0;i<10;i++){
 			distribution[i] = 0.0;
+			entriesSoFar[i] = 0;
 		}
-		int randomInt;
+		int randomInt,countDifferentEntries = 0;
 		double randomDouble, total = 0.0;
-		for(int i=0;i<5;i++){
+		/* While we don't have 5 different entries, keep looking for entries */
+		while(countDifferentEntries < 5){
 			/*
 			 * Choose 5 entries from the 10 entries and fill these 5 entries 
 			 * with values uniformly drawn from [0, 1]
 			 */
 			randomInt = this.randomGenerator.nextInt(10);
-			randomDouble = this.randomGenerator.nextDouble();
-			distribution[randomInt] += randomDouble;
-			total += randomDouble;
+			if(entriesSoFar[randomInt] == 0){ //The entry in randomInt has not yet been chosen
+				entriesSoFar[randomInt] = 1;  //Mark the entry as chosen
+				randomDouble = this.randomGenerator.nextDouble();
+				distribution[randomInt] += randomDouble;
+				total += randomDouble;
+				countDifferentEntries++;
+			}
 		}
 		/*
 		 * Normalize the distribution
@@ -101,14 +109,8 @@ public class MDP {
 		public SpecificRF(Random randomGenerator){
 			this.randomGenerator = randomGenerator;
 			this.meanReward = this.randomGenerator.nextDouble();
-			this.rewards = new double[10][10][2];
-			//Initialize the rewards matrix. 
-			for(int i=0;i<10;i++){
-				for(int j=0;j<10;j++){
-					for(int k=0;k<2;k++){
-						this.rewards[i][j][k] = -1.0;
-					}
-				}
+			if(MDP.verbose){
+				System.out.println("Actual mean reward = "+this.meanReward);
 			}
 		}
 		public double reward(State s, GroundedAction a, State sprime){
@@ -116,27 +118,19 @@ public class MDP {
 			 * From the paper (Jiang, et al.)
 			 * The mean rewards were likewise sampled uniformly and independently from [0, 1], 
 			 * and the actual reward signals have additive Gaussian noise with standard deviation 0.1.
+			 * Also, emails with the authors:
+			 * For each s,a pair, we set the "true" mean R(s,a) to be an iid sample from [0 1]. So two different s,a pairs in general have totally unrelated rewards. But the rewards that we actually observe in our synthetic data for a given s,a are not precisely R(s,a) -- they have added Gaussian noise. So for instance if R(s,a) = 0.5, we will see rewards in the data like 0.49, 0.52, etc.
+			 * 
+			 * Yes, Alex's answers are correct, and I think for the second question Enrique's original understanding is also correct. The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.
 			 */
-			//
-			int sNode = GraphDefinedDomain.getNodeId(s) , sprimeNode = GraphDefinedDomain.getNodeId(sprime), action = -1;
-			if(a.actionName().equals("action0")){
-				action = 0;
-			}else{
-				action = 1;
-			}
-			//Make sure we use the same reward for the same state,action,next state tuple.
-			if(rewards[sNode][sprimeNode][action] == -1.0){
-				rewards[sNode][sprimeNode][action] = this.meanReward + (0.1*this.randomGenerator.nextDouble());
-			}
-			return rewards[sNode][sprimeNode][action];
-			//return this.meanReward + (0.1*this.randomGenerator.nextDouble()); //In this way rewards change each time, which is weird				
+			return this.meanReward;
 		}
 	}
 	/*
 	 * This function performs PolicyIteration in the Random-MDP defined by this object.
 	 */
 	public void getValuePolicy(double gamma){
-		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.001, 100, 1);
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.001, 1000, 1);
 		PI.planFromState(this.initState);
 		System.out.println("Value of the optimal policy using gamma = " + gamma);
 		for(int i=0;i<10;i++){
@@ -158,7 +152,8 @@ public class MDP {
 			trajectory += GraphDefinedDomain.getNodeId(data.getState(i)) + ",";
 			if(i<n-1){
 				trajectory += data.getAction(i) + ",";
-				trajectory += data.rewardSequence.get(i) + ",";
+				/*Email from Nan Jiang:  The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.*/
+				trajectory += (data.rewardSequence.get(i)+ (0.1*this.randomGenerator.nextDouble())) + ",";
 			}
 			if(i<n-2) trajectory += GraphDefinedDomain.getNodeId(data.getState(i+1)) + "\n";
 		}
