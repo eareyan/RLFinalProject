@@ -13,7 +13,6 @@ public class Test {
 
     public static void main(String[] args) throws CloneNotSupportedException, FileNotFoundException, UnsupportedEncodingException {
 
-    	MDP RandomMDP = new MDP();
     	double gammaEval=0.99;//from the paper - this should not be changed
     	
     	double gammaEstimate=0.3;//[0.3,0.6,0.99] 	 **** loop over 
@@ -26,18 +25,20 @@ public class Test {
     	gammas[1] = 0.6;
     	gammas[2] = 0.99;
     	
-    	int[] trajectories = new int[9];
+    	int[] trajectories = new int[11];
     	trajectories[0] = 2;
     	trajectories[1] = 4;
     	trajectories[2] = 6;
     	trajectories[3] = 8;
     	trajectories[4] = 10;
-    	trajectories[5] = 20;
+    	trajectories[5] = 25;
     	trajectories[6] = 50;
-    	trajectories[7] = 100;
-    	trajectories[8] = 120;
+    	trajectories[7] = 75;
+    	trajectories[8] = 100;
+    	trajectories[9] = 140;
+    	trajectories[10] = 200;
     	
-    	int numExperiments = 1000;
+    	int numExperiments = 10000;
     	int currNumberTrajectory = 1;
     	double tempLoss = 0.0;
     	double currLoss = 0.0;
@@ -49,6 +50,7 @@ public class Test {
     			tempLoss = 0.0;
             	System.out.println("Gamma = " + gammaEstimate + " and numberOfTrajectories=" + trajectories[t]);
     			for(int i=0;i<numExperiments;i++){
+    				MDP RandomMDP = new MDP();
             		currNumberTrajectory = trajectories[t];
             		PolicyIteration PI=RandomMDP.getPolicyIterationOutput(gammaEval,1000);//this is the best policy on the original mdp
                 	//printValues(PI,RandomMDP.domain);
