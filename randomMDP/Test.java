@@ -26,6 +26,17 @@ public class Test {
     	gammas[1] = 0.6;
     	gammas[2] = 0.99;
     	
+    	int[] trajectories = new int[9];
+    	trajectories[0] = 2;
+    	trajectories[1] = 4;
+    	trajectories[2] = 6;
+    	trajectories[3] = 8;
+    	trajectories[4] = 10;
+    	trajectories[5] = 20;
+    	trajectories[6] = 50;
+    	trajectories[7] = 100;
+    	trajectories[8] = 120;
+    	
     	int numExperiments = 1000;
     	int currNumberTrajectory = 1;
     	double tempLoss = 0.0;
@@ -34,11 +45,11 @@ public class Test {
 
     	for(int g=0;g<gammas.length;g++){
 			gammaEstimate = gammas[g];
-    		for(int t=0;t<21;t++){
+    		for(int t=0;t<trajectories.length;t++){
     			tempLoss = 0.0;
-            	System.out.println("Gamma = " + gammaEstimate + " and numberOfTrajectories=" + ((t==0)?1:(t*10)));
+            	System.out.println("Gamma = " + gammaEstimate + " and numberOfTrajectories=" + trajectories[t]);
     			for(int i=0;i<numExperiments;i++){
-            		currNumberTrajectory = (t==0)?1:(t*10);
+            		currNumberTrajectory = trajectories[t];
             		PolicyIteration PI=RandomMDP.getPolicyIterationOutput(gammaEval,1000);//this is the best policy on the original mdp
                 	//printValues(PI,RandomMDP.domain);
                 	
