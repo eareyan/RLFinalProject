@@ -5,6 +5,7 @@ import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueItera
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.TerminalFunction;
 import burlap.oomdp.core.states.State;
+import burlap.oomdp.singleagent.Action;
 import burlap.oomdp.singleagent.RewardFunction;
 import burlap.oomdp.statehashing.HashableStateFactory;
 import burlap.oomdp.statehashing.SimpleHashableStateFactory;
@@ -14,14 +15,13 @@ public class RockSampleTest {
 	public static void main (String[] args) {
 		int width = 7;
 		int height = 8;
-		int numRocks = 1;
+		int numRocks = 5;
 		RockSampleDG dg = new RockSampleDG(width, height, numRocks);
 		Domain d = dg.generateDomain();
 		RewardFunction rf = new RockSampleRF(width);
 		TerminalFunction tf = new RockSampleTF(width);
 		State initialState = RockSampleInitialStateGenerator.getInitialState(d, width, height, numRocks);
 
-		System.out.println(d.getActions());
 		
 		
 		//Run value iteration on rock sample.

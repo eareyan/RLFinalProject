@@ -9,6 +9,8 @@ import burlap.oomdp.core.objects.ObjectInstance;
 import burlap.oomdp.core.states.MutableState;
 import burlap.oomdp.core.states.OOMDPState;
 import burlap.oomdp.core.states.State;
+import burlap.oomdp.singleagent.pomdp.PODomain;
+import burlap.oomdp.singleagent.pomdp.beliefstate.tabular.TabularBeliefState;
 
 public class RockSampleInitialStateGenerator {
 
@@ -36,6 +38,12 @@ public class RockSampleInitialStateGenerator {
 		}
 
 		return toReturn;
+	}
+	
+	public static TabularBeliefState getInitialBeliefState(PODomain domain){
+		TabularBeliefState bs = new TabularBeliefState(domain, domain.getStateEnumerator());
+		bs.initializeBeliefsUniformly();
+		return bs;
 	}
 
 }
