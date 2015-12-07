@@ -94,7 +94,7 @@ public class MDP implements Cloneable {
 			String [] eachExperience=listOfExperience[i].split(",");
 			int s=Integer.parseInt(eachExperience[0]);
 			int a=Integer.parseInt(eachExperience[1].substring(eachExperience[1].length() - 1));
-			float r=Float.parseFloat(eachExperience[2]);
+			double r=Double.parseDouble(eachExperience[2]);
 			int sprime=Integer.parseInt(eachExperience[3]);
 			estimatedTransition[s][a][sprime]=estimatedTransition[s][a][sprime] + 1;
 			estimatedReward[s][a][sprime]=estimatedReward[s][a][sprime] + r;
@@ -261,9 +261,9 @@ public class MDP implements Cloneable {
 				a = (data.getAction(i).actionName().equals("action0")?0:1);
 				sprime = GraphDefinedDomain.getNodeId(data.getState(i+1));
 				/* First check if this noise has already been computed */
-				if(this.rewardNoise[s][a][sprime] == Double.MIN_VALUE){
+				//if(this.rewardNoise[s][a][sprime] == Double.MIN_VALUE){
 					this.rewardNoise[s][a][sprime] = 0.1*this.randomGenerator.nextGaussian();
-				}
+				//}
 				trajectory += data.getAction(i) + ",";
 				/*Email from Nan Jiang:  The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.*/
 				trajectory += (data.rewardSequence.get(i)+ this.rewardNoise[s][a][sprime]) + ",";

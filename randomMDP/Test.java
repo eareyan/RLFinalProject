@@ -25,20 +25,18 @@ public class Test {
     	gammas[1] = 0.6;
     	gammas[2] = 0.99;
     	
-    	int[] trajectories = new int[11];
+    	int[] trajectories = new int[6];
     	trajectories[0] = 2;
-    	trajectories[1] = 4;
-    	trajectories[2] = 6;
-    	trajectories[3] = 8;
-    	trajectories[4] = 10;
-    	trajectories[5] = 25;
-    	trajectories[6] = 50;
-    	trajectories[7] = 75;
-    	trajectories[8] = 100;
-    	trajectories[9] = 140;
-    	trajectories[10] = 200;
+    	//trajectories[1] = 4;
+    	//trajectories[2] = 6;
+    	//trajectories[3] = 8;
+    	trajectories[1] = 10;
+    	trajectories[2] = 20;
+    	trajectories[3] = 50;
+    	trajectories[4] = 100;
+    	trajectories[5] = 200;
     	
-    	int numExperiments = 10000;
+    	int numExperiments = 1000;
     	int currNumberTrajectory = 1;
     	double tempLoss = 0.0;
     	double currLoss = 0.0;
@@ -67,9 +65,10 @@ public class Test {
                 	PI3.planFromState(RandomMDP.initState);//do the actual policy evaluation
                 	PI3.toggleDebugPrinting(false); // do not print BURLAP stuff
                 	
+                	//currLoss = loss(PI,PI3,RandomMDP.domain);
                 	currLoss = loss(PI,PI3,RandomMDP.domain);
                 	tempLoss += currLoss;    				
-                	System.out.println(i+":"+currLoss);
+                	//System.out.println(i+":"+currLoss);
     			}
     			System.out.println("Average Loss: " + (tempLoss / numExperiments));
     			writer.println(gammaEstimate + "," + currNumberTrajectory + "," + (tempLoss / numExperiments));
@@ -81,7 +80,7 @@ public class Test {
     private static double loss(PolicyIteration first, PolicyIteration second, Domain domain) {
     	double max=-1;
     	for(int i=0;i<10;i++){
-    		double difference= abs(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ) );
+    		double difference= Math.abs(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ) );
     		if (max<difference){
     			max = difference;
     		}
@@ -89,9 +88,23 @@ public class Test {
 		// TODO Auto-generated method stub
 		return max;
 	}
-    public static double abs(double a) {
-        return (a <= 0.0F) ? 0.0F - a : a;
-    }
+    private static double loss2(PolicyIteration first, PolicyIteration second, Domain domain) {
+    	double temp=0;
+    	for(int i=0;i<10;i++){
+    		temp += Math.abs(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ));
+    	}
+		// TODO Auto-generated method stub
+		return temp/10;
+	}
+    private static double loss3(PolicyIteration first, PolicyIteration second, Domain domain) {
+    	double temp=0;
+    	for(int i=0;i<10;i++){
+    		temp += Math.pow(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ),2);
+    	}
+		// TODO Auto-generated method stub
+		return temp/10;
+	}    
+
 	public static void printValues(PolicyIteration PI,Domain domain){
     	for(int i=0;i<10;i++){
     		System.out.println(PI.value(GraphDefinedDomain.getState(domain, i)));
