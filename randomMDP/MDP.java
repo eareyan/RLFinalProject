@@ -36,6 +36,7 @@ public class MDP implements Cloneable {
 	TerminalFunction tf;
 	SimpleHashableStateFactory hashFactory;
 	Random randomGenerator;
+	double[][][] rewardNoise;
 	private static boolean verbose = true;
 	
 	public MDP(){
@@ -65,7 +66,14 @@ public class MDP implements Cloneable {
 		this.rf = new RandomMDPRewardV1(this.randomGenerator);
 		this.tf = new NullTermination();
 		this.hashFactory = new SimpleHashableStateFactory();	
-		
+		this.rewardNoise = new double[10][2][10];
+		for(int i=0;i<10;i++){
+			for(int j=0;j<2;j++){
+				for(int k=0;k<10;k++){
+					this.rewardNoise[i][j][k] = Double.MIN_VALUE;
+				}
+			}
+		}		
 	}
 	
 	protected Object clone() throws CloneNotSupportedException {
@@ -73,73 +81,63 @@ public class MDP implements Cloneable {
     }
 	
 	public void estimateModel(String experience){
-		//String[][] myStringArray = new String [x][y];
 		int numStates=10;
 		int numActions=2;
-		float [][][] estimatedTransition = new float [numStates][numActions][numStates];
-		float [][][] estimatedReward = new float [numStates][numActions][numStates];
+		double [][][] estimatedTransition = new double [numStates][numActions][numStates];
+		double [][][] estimatedReward = new double [numStates][numActions][numStates];
 		String [] listOfExperience = experience.split("\n");
+		/*
+		 * Parse a string of experience consisting of s,a,r,s lines
+		 */
+		//System.out.println(experience);
 		for(int i=0;i<listOfExperience.length;i++){
 			String [] eachExperience=listOfExperience[i].split(",");
 			int s=Integer.parseInt(eachExperience[0]);
 			int a=Integer.parseInt(eachExperience[1].substring(eachExperience[1].length() - 1));
 			float r=Float.parseFloat(eachExperience[2]);
 			int sprime=Integer.parseInt(eachExperience[3]);
-			estimatedTransition[s][a][sprime]=estimatedTransition[s][a][sprime]+1;
-			estimatedReward[s][a][sprime]=estimatedReward[s][a][sprime]+r;
+			estimatedTransition[s][a][sprime]=estimatedTransition[s][a][sprime] + 1;
+			estimatedReward[s][a][sprime]=estimatedReward[s][a][sprime] + r;
 		}
 		
-		float [][][] counts = estimatedTransition;
-		
+		double [][][] counts = estimatedTransition;
+		/*
+		 * Compute estimated rewards
+		 */
 		for (int i=0;i<10;i++){
 			for (int j=0;j<2;j++){
 				for(int k=0;k<10;k++){
 					if (counts[i][j][k]!=0){
-					estimatedReward[i][j][k]=estimatedReward[i][j][k] / counts[i][j][k];
-					}
-					else{
-						estimatedReward[i][j][k]=(float) 0.5;// this could be something more clever!
+						estimatedReward[i][j][k] = estimatedReward[i][j][k] / counts[i][j][k];
+					}else{
+						estimatedReward[i][j][k] = 0.5;// this could be something more clever!
 					}
 				}
 			}
 		}
 		/*
-		System.out.println("Reward:");
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedReward[i][0][j]+ " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("");
-		
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedReward[i][1][j]+ " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("");
-		System.out.println("Transition:");
-		*/
+		 * Compute estimated Transitions
+		 */
 		for (int i=0;i<10;i++){
 			for (int j=0;j<2;j++){
-				float temp=0;
+				double temp = 0;
 				for (int k=0;k<10;k++){
-				temp=temp+estimatedTransition[i][j][k];
+					temp = temp + estimatedTransition[i][j][k];
 				}
 				for (int k=0;k<10;k++){
-					if (temp>0){
+					if (temp > 0){
 						estimatedTransition[i][j][k]=estimatedTransition[i][j][k]/temp;
 					}
 					else{
-						estimatedTransition[i][j][k]=(float) 0.1;
+						estimatedTransition[i][j][k] = 0.1;
 					}
-					}
+				}
 				
 			}
 		}
-		//sets the transition and reward
+		/*
+		 * sets the transition and reward
+		 */
 		for(int s=0;s<10;s++){
 			for(int a=0;a<2;a++){
 				for(int sprime=0;sprime<10;sprime++){
@@ -150,20 +148,10 @@ public class MDP implements Cloneable {
 		}
 		this.rf = new EstimatedRF(estimatedReward);
 		/*
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedTransition[i][0][j]+ " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("");
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedTransition[i][1][j]+ " ");
-			}
-			System.out.println("");
-		}
-		*/
+		 * Print some debugging info
+		 */
+		//this.printEstimatedRewards(estimatedReward);
+		//this.printEstimatedTransitions(estimatedTransition);
 	}
 	/*
 	 * Create distribution for next state transitions.
@@ -230,13 +218,13 @@ public class MDP implements Cloneable {
 	//Kavosh's reward
 	public static class EstimatedRF implements RewardFunction{
 		double[][][] rewards;
-		public EstimatedRF(float [][][] rew){
-			rewards= new double [10][2][10];
+		public EstimatedRF(double [][][] rew){
+			this.rewards= new double [10][2][10];
 			for(int s=0;s<10;s++){
 				for(int sprime=0;sprime<10;sprime++){
 					//System.out.println(s+","+sprime);
-					rewards[s][0][sprime]=(double) rew[s][0][sprime];
-					rewards[s][1][sprime]=(double) rew[s][1][sprime];
+					rewards[s][0][sprime]= rew[s][0][sprime];
+					rewards[s][1][sprime]= rew[s][1][sprime];
 				}
 			}
 		}
@@ -264,14 +252,24 @@ public class MDP implements Cloneable {
 		//We will simulate from a random initial state
 		EpisodeAnalysis data = R.evaluateBehavior(GraphDefinedDomain.getState(this.domain, this.randomGenerator.nextInt(10)) , this.rf, n);
 		String trajectory = "";
+		int s,a,sprime;
+		
 		for(int i=0;i<n;i++){
-			trajectory += GraphDefinedDomain.getNodeId(data.getState(i)) + ",";
+			s = GraphDefinedDomain.getNodeId(data.getState(i));
+			trajectory += s + ",";
 			if(i<n-1){
+				a = (data.getAction(i).actionName().equals("action0")?0:1);
+				sprime = GraphDefinedDomain.getNodeId(data.getState(i+1));
+				/* First check if this noise has already been computed */
+				if(this.rewardNoise[s][a][sprime] == Double.MIN_VALUE){
+					this.rewardNoise[s][a][sprime] = 0.1*this.randomGenerator.nextGaussian();
+				}
 				trajectory += data.getAction(i) + ",";
 				/*Email from Nan Jiang:  The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.*/
-				trajectory += (data.rewardSequence.get(i)+ (0.1*this.randomGenerator.nextGaussian())) + ",";
+				trajectory += (data.rewardSequence.get(i)+ this.rewardNoise[s][a][sprime]) + ",";
+				//trajectory += data.rewardSequence.get(i) +",";
+				if(i<n-2) trajectory += sprime + "\n";
 			}
-			if(i<n-2) trajectory += GraphDefinedDomain.getNodeId(data.getState(i+1)) + "\n";
 		}
 		return trajectory.substring(0, trajectory.length()-1);
 	}
@@ -306,6 +304,39 @@ public class MDP implements Cloneable {
 	protected void printDistribution(double[] distribution){
 		for(int i=0;i<10;i++){
 			System.out.println(i+"="+distribution[i]);
+		}
+	}
+	
+	protected void printEstimatedRewards(double[][][] estimatedReward){
+		System.out.println("Estimated Reward Action 0:");
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedReward[i][0][j]+ " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("Estimated Reward Action 1:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedReward[i][1][j]+ " ");
+			}
+			System.out.println("");
+		}
+	}
+	protected void printEstimatedTransitions(double[][][] estimatedTransition){
+		System.out.println("Estimated Transition Action 0:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedTransition[i][0][j]+ " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("Estimated Transition Action 1:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedTransition[i][1][j]+ " ");
+			}
+			System.out.println("");
 		}
 	}
 }
