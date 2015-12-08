@@ -25,6 +25,7 @@ public class RockSampleDG implements DomainGenerator {
 	
 	public static String AGENTCLASS = "agent";
 	public static String ROCKCLASS = "rock";
+	public static String ROCKCLASSOBSERVABLE = "rockObservable";
 	public static String OBSERVATIONCLASS = "observation class";
 
 	public static String GOODNESSATT = "goodnessAtt";
@@ -88,6 +89,12 @@ public class RockSampleDG implements DomainGenerator {
 		rockClass.addAttribute(yAtt);
 		rockClass.addAttribute(goodAtt);
 		domain.addObjectClass(rockClass);
+		
+		//Add observable rock object class.
+		ObjectClass rockClassObs = new ObjectClass(domain, ROCKCLASSOBSERVABLE);
+		rockClassObs.addAttribute(xAtt);
+		rockClassObs.addAttribute(yAtt);
+		domain.addObjectClass(rockClassObs);
 		
 		//Add observation class.
 		ObjectClass obsClass = new ObjectClass(domain, OBSERVATIONCLASS);

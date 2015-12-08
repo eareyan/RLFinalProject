@@ -21,17 +21,18 @@ public class RockSampleObservationFunction extends ObservationFunction {
 
 	@Override
 	public boolean canEnumerateObservations() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public List<State> getAllPossibleObservations() {
-		List<State> toReturn = new ArrayList<State>();
-		for (int i = 0; i < this.numRocks; i++) {
-			toReturn.add(RockSampleObservations.observationBad(this.domain , i));
-			toReturn.add(RockSampleObservations.observationGood(this.domain, i));
-		}
-		toReturn.add(RockSampleObservations.observationNothing(this.domain));
+		List<State> toReturn = new ArrayList<State>(); //TODO RETURNING JUNK BECAUSE canEnumerateObservations is false
+//		
+//		for (int i = 0; i < this.numRocks; i++) {
+//			toReturn.add(RockSampleObservations.observationBad(this.domain , i));
+//			toReturn.add(RockSampleObservations.observationGood(this.domain, i));
+//		}
+//		toReturn.add(RockSampleObservations.observationNothing(this.domain));
 		return toReturn;
 	}
 
@@ -86,7 +87,7 @@ public class RockSampleObservationFunction extends ObservationFunction {
 	public State sampleObservation(State state, GroundedAction action) {
 		// No observation if not a check action.
 		if (!(action.action instanceof CheckAction)) {
-			return RockSampleObservations.observationNothing(this.domain);
+			return RockSampleObservations.observationNothing(this.domain, state);
 		}
 		// Took a check action.
 		else {
@@ -96,13 +97,13 @@ public class RockSampleObservationFunction extends ObservationFunction {
 
 			//True reading.
 			if (Math.random() < probTrueReading) { 
-				if (checkedRockIsGood) return RockSampleObservations.observationGood(this.domain, checkedRockIndex);
-				else return RockSampleObservations.observationBad(this.domain, checkedRockIndex);
+				if (checkedRockIsGood) return RockSampleObservations.observationGood(this.domain, checkedRockIndex, state);
+				else return RockSampleObservations.observationBad(this.domain, checkedRockIndex, state);
 			} 
 			//False reading.
 			else {
-				if (!checkedRockIsGood) return RockSampleObservations.observationGood(this.domain, checkedRockIndex);
-				else return RockSampleObservations.observationBad(this.domain, checkedRockIndex);
+				if (!checkedRockIsGood) return RockSampleObservations.observationGood(this.domain, checkedRockIndex, state);
+				else return RockSampleObservations.observationBad(this.domain, checkedRockIndex, state);
 			}
 		}
 	}
