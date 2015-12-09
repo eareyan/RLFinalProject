@@ -17,6 +17,7 @@ import java.util.Random;
 import burlap.oomdp.core.states.State;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.TerminalFunction;
+import burlap.behavior.policy.Policy;
 import burlap.behavior.policy.RandomPolicy;
 import burlap.behavior.singleagent.EpisodeAnalysis;
 import burlap.behavior.singleagent.planning.stochastic.policyiteration.PolicyIteration;
@@ -27,7 +28,7 @@ import burlap.oomdp.auxiliary.common.NullTermination;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
-public class MDP implements Cloneable {
+public class RandomMDP {
 	
 	DomainGenerator dg;
 	Domain domain;
@@ -36,10 +37,9 @@ public class MDP implements Cloneable {
 	TerminalFunction tf;
 	SimpleHashableStateFactory hashFactory;
 	Random randomGenerator;
-	double[][][] rewardNoise;
 	private static boolean verbose = true;
 	
-	public MDP(){
+	public RandomMDP(){
 		this.dg = new GraphDefinedDomain(10);
 		this.randomGenerator = new Random();
 		/*
@@ -62,97 +62,12 @@ public class MDP implements Cloneable {
 		}
 		this.domain = this.dg.generateDomain();
 		this.initState = GraphDefinedDomain.getState(this.domain, 0); 
-		//this.rf = new SpecificRF(this.randomGenerator);
-		this.rf = new RandomMDPRewardV1(this.randomGenerator);
+		this.rf = new RandomMDPReward(this.randomGenerator);
 		this.tf = new NullTermination();
 		this.hashFactory = new SimpleHashableStateFactory();	
-		this.rewardNoise = new double[10][2][10];
-		for(int i=0;i<10;i++){
-			for(int j=0;j<2;j++){
-				for(int k=0;k<10;k++){
-					this.rewardNoise[i][j][k] = Double.MIN_VALUE;
-				}
-			}
-		}		
-	}
-	
-	protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-	
-	public void estimateModel(String experience){
-		int numStates=10;
-		int numActions=2;
-		double [][][] estimatedTransition = new double [numStates][numActions][numStates];
-		double [][][] estimatedReward = new double [numStates][numActions][numStates];
-		String [] listOfExperience = experience.split("\n");
-		/*
-		 * Parse a string of experience consisting of s,a,r,s lines
-		 */
-		//System.out.println(experience);
-		for(int i=0;i<listOfExperience.length;i++){
-			String [] eachExperience=listOfExperience[i].split(",");
-			int s=Integer.parseInt(eachExperience[0]);
-			int a=Integer.parseInt(eachExperience[1].substring(eachExperience[1].length() - 1));
-			double r=Double.parseDouble(eachExperience[2]);
-			int sprime=Integer.parseInt(eachExperience[3]);
-			estimatedTransition[s][a][sprime]=estimatedTransition[s][a][sprime] + 1;
-			estimatedReward[s][a][sprime]=estimatedReward[s][a][sprime] + r;
-		}
 		
-		double [][][] counts = estimatedTransition;
-		/*
-		 * Compute estimated rewards
-		 */
-		for (int i=0;i<10;i++){
-			for (int j=0;j<2;j++){
-				for(int k=0;k<10;k++){
-					if (counts[i][j][k]!=0){
-						estimatedReward[i][j][k] = estimatedReward[i][j][k] / counts[i][j][k];
-					}else{
-						estimatedReward[i][j][k] = 0.5;// this could be something more clever!
-					}
-				}
-			}
-		}
-		/*
-		 * Compute estimated Transitions
-		 */
-		for (int i=0;i<10;i++){
-			for (int j=0;j<2;j++){
-				double temp = 0;
-				for (int k=0;k<10;k++){
-					temp = temp + estimatedTransition[i][j][k];
-				}
-				for (int k=0;k<10;k++){
-					if (temp > 0){
-						estimatedTransition[i][j][k]=estimatedTransition[i][j][k]/temp;
-					}
-					else{
-						estimatedTransition[i][j][k] = 0.1;
-					}
-				}
-				
-			}
-		}
-		/*
-		 * sets the transition and reward
-		 */
-		for(int s=0;s<10;s++){
-			for(int a=0;a<2;a++){
-				for(int sprime=0;sprime<10;sprime++){
-					((GraphDefinedDomain) this.dg).setTransition(s, a, sprime, estimatedTransition[s][a][sprime]);
-				}
-
-			}
-		}
-		this.rf = new EstimatedRF(estimatedReward);
-		/*
-		 * Print some debugging info
-		 */
-		//this.printEstimatedRewards(estimatedReward);
-		//this.printEstimatedTransitions(estimatedTransition);
 	}
+	
 	/*
 	 * Create distribution for next state transitions.
 	 */
@@ -198,7 +113,7 @@ public class MDP implements Cloneable {
 		public SpecificRF(Random randomGenerator){
 			this.randomGenerator = randomGenerator;
 			this.meanReward = this.randomGenerator.nextDouble();
-			if(MDP.verbose){
+			if(RandomMDP.verbose){
 				System.out.println("Actual mean reward = "+this.meanReward);
 			}
 		}
@@ -215,32 +130,26 @@ public class MDP implements Cloneable {
 			return this.meanReward;
 		}
 	}
-	//Kavosh's reward
-	public static class EstimatedRF implements RewardFunction{
-		double[][][] rewards;
-		public EstimatedRF(double [][][] rew){
-			this.rewards= new double [10][2][10];
-			for(int s=0;s<10;s++){
-				for(int sprime=0;sprime<10;sprime++){
-					//System.out.println(s+","+sprime);
-					rewards[s][0][sprime]= rew[s][0][sprime];
-					rewards[s][1][sprime]= rew[s][1][sprime];
-				}
-			}
-		}
-		public double reward(State s, GroundedAction a, State sprime){
-			return rewards[GraphDefinedDomain.getNodeId(s)][(a.actionName().equals("action0"))?0:1][GraphDefinedDomain.getNodeId(sprime)];
-		}
-	}
+
 	/*
 	 * This function performs PolicyIteration in the Random-MDP defined by this object.
 	 */
 	public PolicyIteration getPolicyIterationOutput(double gamma, int maxInt){
-		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.001, 1000, maxInt);// why is it 1?
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.0001, 1000, maxInt);// why is it 1?
 		PI.toggleDebugPrinting(false); // do not print BURLAP stuff
 		PI.planFromState(this.initState);
 		return PI;
 	}
+	/*
+	 * This function performs PolicyIteration in the Random-MDP defined by this object.
+	 */
+	public PolicyIteration getPolicyFromInitialPolicy(double gamma, int maxInt,Policy initialPolicy){
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.0001, 1000, maxInt);// why is it 1?
+		PI.toggleDebugPrinting(false); // do not print BURLAP stuff
+		PI.setPolicyToEvaluate(initialPolicy);
+		PI.planFromState(this.initState);
+		return PI;
+	}	
 	/*
 	 * This method simulates the MDP and returns an string
 	 * with the result of the simulation for n trajectories.
@@ -253,7 +162,17 @@ public class MDP implements Cloneable {
 		EpisodeAnalysis data = R.evaluateBehavior(GraphDefinedDomain.getState(this.domain, this.randomGenerator.nextInt(10)) , this.rf, n);
 		String trajectory = "";
 		int s,a,sprime;
+		double[][][] rewardNoise;
 		
+		rewardNoise = new double[10][2][10];
+		for(int i=0;i<10;i++){
+			for(int j=0;j<2;j++){
+				for(int k=0;k<10;k++){
+					rewardNoise[i][j][k] = Double.MIN_VALUE;
+				}
+			}
+		}		
+
 		for(int i=0;i<n;i++){
 			s = GraphDefinedDomain.getNodeId(data.getState(i));
 			trajectory += s + ",";
@@ -261,12 +180,12 @@ public class MDP implements Cloneable {
 				a = (data.getAction(i).actionName().equals("action0")?0:1);
 				sprime = GraphDefinedDomain.getNodeId(data.getState(i+1));
 				/* First check if this noise has already been computed */
-				//if(this.rewardNoise[s][a][sprime] == Double.MIN_VALUE){
-					this.rewardNoise[s][a][sprime] = 0.1*this.randomGenerator.nextGaussian();
+				//if(rewardNoise[s][a][sprime] == Double.MIN_VALUE){
+					rewardNoise[s][a][sprime] = 0.1*this.randomGenerator.nextGaussian();
 				//}
 				trajectory += data.getAction(i) + ",";
 				/*Email from Nan Jiang:  The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.*/
-				trajectory += (data.rewardSequence.get(i)+ this.rewardNoise[s][a][sprime]) + ",";
+				trajectory += (data.rewardSequence.get(i)+ rewardNoise[s][a][sprime]) + ",";
 				//trajectory += data.rewardSequence.get(i) +",";
 				if(i<n-2) trajectory += sprime + "\n";
 			}
