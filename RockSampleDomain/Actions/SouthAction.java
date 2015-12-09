@@ -1,6 +1,6 @@
-package finalProject.Actions;
+package finalProject.Domain.Actions;
 
-import finalProject.RockSampleDG;
+import finalProject.Domain.RockSampleDG;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.objects.ObjectInstance;
 import burlap.oomdp.core.states.State;
@@ -15,7 +15,7 @@ public class SouthAction extends MovementAction {
 	protected State performActionHelper(State s, GroundedAction groundedAction) {
 		ObjectInstance agent = s.getObjectsOfClass(RockSampleDG.AGENTCLASS).get(0);
 		int agenty = agent.getIntValForAttribute(RockSampleDG.YATT);
-		if (agenty > 1) {
+		if (agenty > 0) {
 			agent.setValue(RockSampleDG.YATT, agenty-1);
 		}
 		

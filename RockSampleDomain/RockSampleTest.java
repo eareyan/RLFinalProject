@@ -1,4 +1,4 @@
-package finalProject;
+package finalProject.Domain;
 
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.singleagent.planning.stochastic.valueiteration.ValueIteration;
@@ -15,7 +15,7 @@ public class RockSampleTest {
 	public static void main (String[] args) {
 		int width = 7;
 		int height = 8;
-		int numRocks = 5;
+		int numRocks = 2;
 		RockSampleDG dg = new RockSampleDG(width, height, numRocks);
 		Domain d = dg.generateDomain();
 		RewardFunction rf = new RockSampleRF(width);

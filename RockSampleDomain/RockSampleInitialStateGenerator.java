@@ -1,5 +1,7 @@
-package finalProject;
+package finalProject.Domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import burlap.oomdp.auxiliary.DomainGenerator;
@@ -39,10 +41,28 @@ public class RockSampleInitialStateGenerator {
 
 		return toReturn;
 	}
-	
-	public static TabularBeliefState getInitialBeliefState(PODomain domain){
+
+	public static TabularBeliefState getInitialBeliefState(PODomain domain, State initialState){
 		TabularBeliefState bs = new TabularBeliefState(domain, domain.getStateEnumerator());
-		bs.initializeBeliefsUniformly();
+		ObjectInstance agent = initialState.getObjectsOfClass(RockSampleDG.AGENTCLASS).get(0);
+		int agentInitialX = agent.getIntValForAttribute(RockSampleDG.XATT);
+		int agentInitialY = agent.getIntValForAttribute(RockSampleDG.YATT);
+		List<State> statesWhereAgentAtBeginning = new ArrayList<State>();
+		for (State s : bs.getStateSpace()) {
+			ObjectInstance agentS = s.getObjectsOfClass(RockSampleDG.AGENTCLASS).get(0);
+			int sAgentX = agentS.getIntValForAttribute(RockSampleDG.XATT);
+			int sAgentY = agentS.getIntValForAttribute(RockSampleDG.YATT);
+			if (agentInitialX == sAgentX && agentInitialY == sAgentY) {
+				statesWhereAgentAtBeginning.add(s);
+			}
+		}
+		double probInEachState = 1.0/(float)statesWhereAgentAtBeginning.size();
+//		System.out.println("probInEachState: " + probInEachState);
+		for (State s : statesWhereAgentAtBeginning) {
+			bs.setBelief(s, probInEachState);
+//			System.out.println(s.getCompleteStateDescription());
+		}
+
 		return bs;
 	}
 

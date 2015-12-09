@@ -1,8 +1,8 @@
-package finalProject.Actions;
+package finalProject.Domain.Actions;
 
 import java.util.List;
 
-import finalProject.RockSampleDG;
+import finalProject.Domain.RockSampleDG;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.TransitionProbability;
 import burlap.oomdp.core.objects.ObjectInstance;

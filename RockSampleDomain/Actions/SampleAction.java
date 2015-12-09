@@ -1,8 +1,8 @@
-package finalProject.Actions;
+package finalProject.Domain.Actions;
 
 import java.util.List;
 
-import finalProject.RockSampleDG;
+import finalProject.Domain.RockSampleDG;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.TransitionProbability;
 import burlap.oomdp.core.objects.ObjectInstance;
@@ -27,8 +27,9 @@ public class SampleAction extends SimpleDeterministicAction implements FullActio
 		for (ObjectInstance rock : s.getObjectsOfClass(RockSampleDG.ROCKCLASS)) {
 			int rockx = rock.getIntValForAttribute(RockSampleDG.XATT);
 			int rocky = rock.getIntValForAttribute(RockSampleDG.YATT);
-			
+//			if (agentx == 1) System.out.println("ax, ay | " + agentx + "," + agenty);
 			if (agentx == rockx && agenty == rocky) {
+//				System.out.println("Applying sample to rock at " + rockx + ", " + rocky);
 				rock.setValue(RockSampleDG.GOODNESSATT, 0);
 			}
 		}

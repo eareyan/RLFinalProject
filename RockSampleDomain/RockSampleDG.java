@@ -1,13 +1,13 @@
-package finalProject;
+package finalProject.Domain;
 
 import java.util.List;
 
-import finalProject.Actions.CheckAction;
-import finalProject.Actions.EastAction;
-import finalProject.Actions.NorthAction;
-import finalProject.Actions.SampleAction;
-import finalProject.Actions.SouthAction;
-import finalProject.Actions.WestAction;
+import finalProject.Domain.Actions.CheckAction;
+import finalProject.Domain.Actions.EastAction;
+import finalProject.Domain.Actions.NorthAction;
+import finalProject.Domain.Actions.SampleAction;
+import finalProject.Domain.Actions.SouthAction;
+import finalProject.Domain.Actions.WestAction;
 import burlap.behavior.singleagent.auxiliary.StateEnumerator;
 import burlap.oomdp.auxiliary.DomainGenerator;
 import burlap.oomdp.core.Attribute;
@@ -53,12 +53,12 @@ public class RockSampleDG implements DomainGenerator {
 		//----------ADD ATTRIBUTES------- 
 		//x Position Attribute
 		Attribute xAtt = new Attribute(domain, XATT, Attribute.AttributeType.DISC);
-		xAtt.setDiscValuesForRange(0, this.width-1, 1); //-1 due to inclusivity vs exclusivity
+		xAtt.setDiscValuesForRange(0, this.width, 1); //Up to width since can be terminal
 		domain.addAttribute(xAtt);
 		
 		//y Position Attribute
 		Attribute yAtt = new Attribute(domain, YATT, Attribute.AttributeType.DISC);
-		yAtt.setDiscValuesForRange(0, this.width-1, 1); //-1 due to inclusivity vs exclusivity
+		yAtt.setDiscValuesForRange(0, this.height-1, 1); //-1 due to inclusivity vs exclusivity
 		domain.addAttribute(yAtt);
 		
 		
@@ -69,11 +69,11 @@ public class RockSampleDG implements DomainGenerator {
 		
 		//Observation attributes
 		Attribute obAtt = new Attribute(domain, OBSATT, AttributeType.DISC);
-		obAtt.setDiscValues(new String[]{RockSampleObservations.OBSBAD, RockSampleObservations.OBSGOOD, RockSampleObservations.OBSNOTHING});
+		obAtt.setDiscValues(new String[]{RockSampleObservations.OBSBAD, RockSampleObservations.OBSGOOD});
 		domain.addAttribute(obAtt);
 		
 		Attribute rockNumberAtt = new Attribute(domain, ROCKNUMBEROBSATT, AttributeType.DISC);
-		goodAtt.setDiscValuesForRange(0, numRocks, 1); 	
+		goodAtt.setDiscValuesForRange(0, numRocks-1, 1); 	
 		domain.addAttribute(rockNumberAtt);
 		
 		//----------ADD OBJECT CLASSES------- 
@@ -116,7 +116,7 @@ public class RockSampleDG implements DomainGenerator {
 		((PODomain) domain).setStateEnumerator(senum);
 
 		//--------OBSERVATION FUNCTION--------- 
-		new RockSampleObservationFunction((PODomain) domain, this.numRocks);
+		new RockSampleObservationFunction((PODomain) domain, width, height, this.numRocks);
 		
 		return domain;
 	}

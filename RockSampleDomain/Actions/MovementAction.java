@@ -1,4 +1,4 @@
-package finalProject.Actions;
+package finalProject.Domain.Actions;
 
 import java.util.List;
 

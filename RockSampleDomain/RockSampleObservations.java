@@ -1,4 +1,4 @@
-package finalProject;
+package finalProject.Domain;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class RockSampleObservations {
 
 	public static String OBSGOOD = "observationOfGood";
 	public static String OBSBAD = "observationOfBad";
-	public static String OBSNOTHING = "observationNothing";
+//	public static String OBSNOTHING = "observationNothing";
 	
 	private static ObjectInstance convertRockToWithoutGoodness(Domain d, ObjectInstance rock) {
 		int rockX = rock.getIntValForAttribute(RockSampleDG.XATT);
@@ -58,9 +58,10 @@ public class RockSampleObservations {
 	
 	public static State observationNothing(Domain rsD, State s){
 		State nothing = stripStateOfRockGoodnessObservations(rsD, s);
-		ObjectInstance obsObject = new MutableObjectInstance(rsD.getObjectClass(RockSampleDG.OBSERVATIONCLASS), RockSampleDG.OBSERVATIONCLASS);
-		obsObject.setValue(RockSampleDG.OBSATT, OBSNOTHING);
-		nothing.addObject(obsObject);
+//		ObjectInstance obsObject = new MutableObjectInstance(rsD.getObjectClass(RockSampleDG.OBSERVATIONCLASS), RockSampleDG.OBSERVATIONCLASS);
+//		obsObject.setValue(RockSampleDG.OBSATT, OBSNOTHING);
+//		obsObject.setValue(RockSampleDG.ROCKNUMBEROBSATT, 0);
+//		nothing.addObject(obsObject);
 		return nothing;
 	}
 }

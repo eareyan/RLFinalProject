@@ -1,6 +1,6 @@
-package finalProject.Actions;
+package finalProject.Domain.Actions;
 
-import finalProject.RockSampleDG;
+import finalProject.Domain.RockSampleDG;
 import burlap.oomdp.core.Domain;
 import burlap.oomdp.core.objects.ObjectInstance;
 import burlap.oomdp.core.states.State;

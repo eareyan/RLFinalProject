@@ -1,7 +1,7 @@
-package finalProject;
+package finalProject.Domain;
 
-import finalProject.Actions.EastAction;
-import finalProject.Actions.SampleAction;
+import finalProject.Domain.Actions.EastAction;
+import finalProject.Domain.Actions.SampleAction;
 import burlap.oomdp.core.objects.ObjectInstance;
 import burlap.oomdp.core.states.State;
 import burlap.oomdp.singleagent.GroundedAction;

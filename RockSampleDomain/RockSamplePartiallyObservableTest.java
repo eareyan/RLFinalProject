@@ -1,4 +1,4 @@
-package finalProject;
+package finalProject.Domain;
 
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.policy.Policy;
@@ -25,8 +25,8 @@ public class RockSamplePartiallyObservableTest {
 		RewardFunction rf = new RockSampleRF(width);
 		TerminalFunction tf = new RockSampleTF(width);
 		State initialState = RockSampleInitialStateGenerator.getInitialState(domain, width, height, numRocks);
-		domain.getStateEnumerator().findReachableStatesAndEnumerate(initialState);
-		BeliefState initialBelief = RockSampleInitialStateGenerator.getInitialBeliefState(domain);
+		domain.getStateEnumerator().findReachableStatesAndEnumerate(initialState, tf);
+		BeliefState initialBelief = RockSampleInitialStateGenerator.getInitialBeliefState(domain, initialState);
 
 		BeliefSparseSampling bss = new BeliefSparseSampling(domain, rf, 0.8, new HashableTabularBeliefStateFactory(), 2, 2);
 		Policy p = new GreedyQPolicy(bss);
