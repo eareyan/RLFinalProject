@@ -8,11 +8,11 @@ import burlap.oomdp.core.states.State;
 import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
-public class RandomMDPRewardV1 implements RewardFunction{
+public class RandomMDPReward implements RewardFunction{
 	Random randomGenerator;
 	double meanReward;
 	double[][][] rewards;
-	public RandomMDPRewardV1(Random randomGenerator){
+	public RandomMDPReward(Random randomGenerator){
 		this.randomGenerator = randomGenerator;
 		this.rewards = new double[10][10][2];
 		//Initialize the rewards matrix. 

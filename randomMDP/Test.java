@@ -13,12 +13,7 @@ public class Test {
 
     public static void main(String[] args) throws CloneNotSupportedException, FileNotFoundException, UnsupportedEncodingException {
 
-    	double gammaEval=0.99;//from the paper - this should not be changed
-    	
-    	double gammaEstimate=0.3;//[0.3,0.6,0.99] 	 **** loop over 
-    	//int numTrajectories=2000;//[1 10 20 30.. 200]**** these two
-    											//**** also for each (gamma,trajectory) loss should be computed from 1000 samples and the average is computed. 
-    											// so 3 "for"s is needed here.
+    	final double gammaEval=0.99;//from the paper - this should not be changed
     	    	
     	double[] gammas = new double[3];
     	gammas[0] = 0.3;
@@ -26,60 +21,53 @@ public class Test {
     	gammas[2] = 0.99;
     	
     	int[] trajectories = new int[6];
-    	trajectories[0] = 2;
-    	//trajectories[1] = 4;
-    	//trajectories[2] = 6;
-    	//trajectories[3] = 8;
+    	trajectories[0] = 5;
     	trajectories[1] = 10;
     	trajectories[2] = 20;
     	trajectories[3] = 50;
     	trajectories[4] = 100;
     	trajectories[5] = 200;
     	
-    	int numExperiments = 1000;
-    	int currNumberTrajectory = 1;
+    	int numExperiments = 2000;
     	double tempLoss = 0.0;
     	double currLoss = 0.0;
+    	int numberOfPolicyIterations = 1000;
     	PrintWriter writer = new PrintWriter("planningloss-"+numExperiments+".csv", "UTF-8");
-
+		
+    	
+    	
     	for(int g=0;g<gammas.length;g++){
-			gammaEstimate = gammas[g];
     		for(int t=0;t<trajectories.length;t++){
     			tempLoss = 0.0;
-            	System.out.println("Gamma = " + gammaEstimate + " and numberOfTrajectories=" + trajectories[t]);
     			for(int i=0;i<numExperiments;i++){
-    				MDP RandomMDP = new MDP();
-            		currNumberTrajectory = trajectories[t];
-            		PolicyIteration PI=RandomMDP.getPolicyIterationOutput(gammaEval,1000);//this is the best policy on the original mdp
-                	//printValues(PI,RandomMDP.domain);
+            		RandomMDP RandomMDP = new RandomMDP();
+            		PolicyIteration PI=RandomMDP.getPolicyIterationOutput(gammaEval,numberOfPolicyIterations);//this is the best policy on the original mdp
                 	
-                	MDP RandomMDPestimated =(MDP) RandomMDP.clone();//copy the previous mdp to randomMDPEstimated -- we will change model below
-                	String Exp=RandomMDPestimated.Trajectories(currNumberTrajectory);//sample a bunch of trajectories
-                	RandomMDPestimated.estimateModel(Exp);//change the MDP by estimating the reward and transition model from sampled experience
-                	PolicyIteration PI2=RandomMDPestimated.getPolicyIterationOutput(gammaEstimate,1000);//find the best policy on estimated mdp 
-                	//printValues(PI2,RandomMDPestimated.domain);
+                	EstimatedMDP RandomMDPestimated = new EstimatedMDP(RandomMDP.Trajectories(trajectories[t]));
+                	PolicyIteration PI2=RandomMDPestimated.getPolicyIterationOutput(gammas[g],numberOfPolicyIterations);//find the best policy on estimated mdp 
                 	Policy bestPolicyOnEstimatedMDP = PI2.getComputedPolicy();//extract policy from PI2
                 	
-                	PolicyIteration PI3 = new PolicyIteration(RandomMDP.domain, RandomMDP.rf, RandomMDP.tf, gammaEval , RandomMDP.hashFactory, 0.001, 1000, 1);// create
-            		PI3.setPolicyToEvaluate(bestPolicyOnEstimatedMDP);//feed PI3 by policy found from estimated mdp
-                	PI3.planFromState(RandomMDP.initState);//do the actual policy evaluation
-                	PI3.toggleDebugPrinting(false); // do not print BURLAP stuff
+                	PolicyIteration PI3 = RandomMDP.getPolicyFromInitialPolicy(gammaEval, 1, bestPolicyOnEstimatedMDP);
                 	
                 	//currLoss = loss(PI,PI3,RandomMDP.domain);
-                	currLoss = loss(PI,PI3,RandomMDP.domain);
+                	currLoss = loss2(PI,PI3,RandomMDP.domain);
                 	tempLoss += currLoss;    				
                 	//System.out.println(i+":"+currLoss);
     			}
-    			System.out.println("Average Loss: " + (tempLoss / numExperiments));
-    			writer.println(gammaEstimate + "," + currNumberTrajectory + "," + (tempLoss / numExperiments));
+    			System.out.println(gammas[g] + "," + trajectories[t] + "," + (tempLoss / numExperiments));
+    			writer.println(gammas[g] + "," + trajectories[t] + "," + (tempLoss / numExperiments));
     		}
 		}
     	writer.close();
-    	
     }
+    	
+    	
     private static double loss(PolicyIteration first, PolicyIteration second, Domain domain) {
     	double max=-1;
     	for(int i=0;i<10;i++){
+    		//System.out.println(first.value(GraphDefinedDomain.getState(domain, i)));
+    		//System.out.println(second.value(GraphDefinedDomain.getState(domain, i)));
+    		//System.out.println("***");
     		double difference= Math.abs(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ) );
     		if (max<difference){
     			max = difference;
@@ -91,19 +79,11 @@ public class Test {
     private static double loss2(PolicyIteration first, PolicyIteration second, Domain domain) {
     	double temp=0;
     	for(int i=0;i<10;i++){
-    		temp += Math.abs(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ));
+    		temp += first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i));
     	}
 		// TODO Auto-generated method stub
 		return temp/10;
 	}
-    private static double loss3(PolicyIteration first, PolicyIteration second, Domain domain) {
-    	double temp=0;
-    	for(int i=0;i<10;i++){
-    		temp += Math.pow(first.value(GraphDefinedDomain.getState(domain, i)) - second.value(GraphDefinedDomain.getState(domain, i) ),2);
-    	}
-		// TODO Auto-generated method stub
-		return temp/10;
-	}    
 
 	public static void printValues(PolicyIteration PI,Domain domain){
     	for(int i=0;i<10;i++){
