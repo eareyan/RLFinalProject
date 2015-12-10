@@ -19,14 +19,17 @@ public class EstimatedMDP {
 	TerminalFunction tf;
 	SimpleHashableStateFactory hashFactory;
 	
-	public EstimatedMDP(String experience){
-		this.dg = new GraphDefinedDomain(10);
+	public EstimatedMDP(String experience,DomainGenerator dg,Domain domain,SimpleHashableStateFactory hashFactory){
+		//this.dg = new GraphDefinedDomain(10);
+		this.dg = dg;
+		
+		//this.domain = this.dg.generateDomain();
+		this.domain = domain;
 		double[][][] estimatedRewards = this.estimateModel(experience);
-		this.domain = this.dg.generateDomain();
 		this.initState = GraphDefinedDomain.getState(this.domain, 0); 
 		this.rf = new EstimatedRF(estimatedRewards);
 		this.tf = new NullTermination();
-		this.hashFactory = new SimpleHashableStateFactory();
+		this.hashFactory = hashFactory;	
 	}	
 	
 	protected double[][][] estimateModel(String experience){
@@ -58,12 +61,20 @@ public class EstimatedMDP {
 				for(int k=0;k<10;k++){
 					if (counts[i][j][k]!=0){
 						estimatedReward[i][j][k] = estimatedReward[i][j][k] / counts[i][j][k];
-					}else{
-						estimatedReward[i][j][k] = 0.5;// this could be something more clever!
 					}
 				}
 			}
 		}
+		for (int i=0;i<10;i++){
+			for (int j=0;j<2;j++){
+				for(int k=0;k<10;k++){
+					if (counts[i][j][k]==0 && !checkIfObservedSA(counts,i,j)){
+						estimatedReward[i][j][k] = 0.5;
+					}
+				}
+			}
+		}
+		
 		/*
 		 * Compute estimated Transitions
 		 */
@@ -102,6 +113,14 @@ public class EstimatedMDP {
 		//this.printEstimatedTransitions(estimatedTransition);
 		return estimatedReward;
 	}	
+	protected boolean checkIfObservedSA(double[][][] counts,int i,int j){
+		for(int k=0;k<10;k++){
+			if(counts[i][j][k] != 0.0){
+				return true;
+			}
+		}
+		return false;
+	}
 	//Kavosh's reward
 	public static class EstimatedRF implements RewardFunction{
 		double[][][] rewards;
@@ -123,9 +142,41 @@ public class EstimatedMDP {
 	 * This function performs PolicyIteration in the Random-MDP defined by this object.
 	 */
 	public PolicyIteration getPolicyIterationOutput(double gamma, int maxInt){
-		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.0001, 1000, maxInt);// why is it 1?
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.05, 1000, maxInt);// why is it 1?
 		PI.toggleDebugPrinting(false); // do not print BURLAP stuff
 		PI.planFromState(this.initState);
 		return PI;
 	}
+	protected void printEstimatedRewards(double[][][] estimatedReward){
+		System.out.println("Estimated Reward Action 0:");
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedReward[i][0][j]+ " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("Estimated Reward Action 1:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedReward[i][1][j]+ " ");
+			}
+			System.out.println("");
+		}
+	}
+	protected void printEstimatedTransitions(double[][][] estimatedTransition){
+		System.out.println("Estimated Transition Action 0:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedTransition[i][0][j]+ " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("Estimated Transition Action 1:");		
+		for (int i=0;i<10;i++){
+			for (int j=0;j<10;j++){
+				System.out.print(estimatedTransition[i][1][j]+ " ");
+			}
+			System.out.println("");
+		}
+	}	
 }

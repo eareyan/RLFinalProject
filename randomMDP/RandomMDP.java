@@ -25,7 +25,6 @@ import burlap.oomdp.statehashing.SimpleHashableStateFactory;
 import burlap.domain.singleagent.graphdefined.GraphDefinedDomain;
 import burlap.oomdp.auxiliary.DomainGenerator;
 import burlap.oomdp.auxiliary.common.NullTermination;
-import burlap.oomdp.singleagent.GroundedAction;
 import burlap.oomdp.singleagent.RewardFunction;
 
 public class RandomMDP {
@@ -41,7 +40,7 @@ public class RandomMDP {
 	
 	public RandomMDP(){
 		this.dg = new GraphDefinedDomain(10);
-		this.randomGenerator = new Random();
+		this.randomGenerator = new Random(System.currentTimeMillis());
 		/*
 		 * Set transitions. From the paper (Jiang, et al.)
 		 * For each state-action pair (s, a), the distribution over the next state, P (s, a, ·), is
@@ -62,10 +61,9 @@ public class RandomMDP {
 		}
 		this.domain = this.dg.generateDomain();
 		this.initState = GraphDefinedDomain.getState(this.domain, 0); 
-		this.rf = new RandomMDPReward(this.randomGenerator);
+		this.rf = new RandomMDPReward();
 		this.tf = new NullTermination();
-		this.hashFactory = new SimpleHashableStateFactory();	
-		
+		this.hashFactory = new SimpleHashableStateFactory();
 	}
 	
 	/*
@@ -105,37 +103,11 @@ public class RandomMDP {
 		}
 		return distribution;
 	}
-	//Enrique's reward
-	public static class SpecificRF implements RewardFunction{
-		Random randomGenerator;
-		double meanReward;
-		double[][][] rewards;
-		public SpecificRF(Random randomGenerator){
-			this.randomGenerator = randomGenerator;
-			this.meanReward = this.randomGenerator.nextDouble();
-			if(RandomMDP.verbose){
-				System.out.println("Actual mean reward = "+this.meanReward);
-			}
-		}
-		public double reward(State s, GroundedAction a, State sprime){
-			/*
-			 * From the paper (Jiang, et al.)
-			 * The mean rewards were likewise sampled uniformly and independently from [0, 1], 
-			 * and the actual reward signals have additive Gaussian noise with standard deviation 0.1.
-			 * Also, emails with the authors:
-			 * For each s,a pair, we set the "true" mean R(s,a) to be an iid sample from [0 1]. So two different s,a pairs in general have totally unrelated rewards. But the rewards that we actually observe in our synthetic data for a given s,a are not precisely R(s,a) -- they have added Gaussian noise. So for instance if R(s,a) = 0.5, we will see rewards in the data like 0.49, 0.52, etc.
-			 * 
-			 * Yes, Alex's answers are correct, and I think for the second question Enrique's original understanding is also correct. The mean reward (or you called it "baseline") is sampled only once when we generate the MDP specification; the Gaussian noise is added whenever we sample trajectories from the MDP.
-			 */
-			return this.meanReward;
-		}
-	}
-
 	/*
 	 * This function performs PolicyIteration in the Random-MDP defined by this object.
 	 */
 	public PolicyIteration getPolicyIterationOutput(double gamma, int maxInt){
-		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.0001, 1000, maxInt);// why is it 1?
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.05, 1000, maxInt);// why is it 1?
 		PI.toggleDebugPrinting(false); // do not print BURLAP stuff
 		PI.planFromState(this.initState);
 		return PI;
@@ -144,7 +116,7 @@ public class RandomMDP {
 	 * This function performs PolicyIteration in the Random-MDP defined by this object.
 	 */
 	public PolicyIteration getPolicyFromInitialPolicy(double gamma, int maxInt,Policy initialPolicy){
-		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.0001, 1000, maxInt);// why is it 1?
+		PolicyIteration PI = new PolicyIteration(this.domain, this.rf, this.tf, gamma , this.hashFactory, 0.05, 1000, maxInt);// why is it 1?
 		PI.toggleDebugPrinting(false); // do not print BURLAP stuff
 		PI.setPolicyToEvaluate(initialPolicy);
 		PI.planFromState(this.initState);
@@ -172,7 +144,6 @@ public class RandomMDP {
 				}
 			}
 		}		
-
 		for(int i=0;i<n;i++){
 			s = GraphDefinedDomain.getNodeId(data.getState(i));
 			trajectory += s + ",";
@@ -223,39 +194,6 @@ public class RandomMDP {
 	protected void printDistribution(double[] distribution){
 		for(int i=0;i<10;i++){
 			System.out.println(i+"="+distribution[i]);
-		}
-	}
-	
-	protected void printEstimatedRewards(double[][][] estimatedReward){
-		System.out.println("Estimated Reward Action 0:");
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedReward[i][0][j]+ " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("Estimated Reward Action 1:");		
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedReward[i][1][j]+ " ");
-			}
-			System.out.println("");
-		}
-	}
-	protected void printEstimatedTransitions(double[][][] estimatedTransition){
-		System.out.println("Estimated Transition Action 0:");		
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedTransition[i][0][j]+ " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("Estimated Transition Action 1:");		
-		for (int i=0;i<10;i++){
-			for (int j=0;j<10;j++){
-				System.out.print(estimatedTransition[i][1][j]+ " ");
-			}
-			System.out.println("");
 		}
 	}
 }
