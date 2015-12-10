@@ -3,19 +3,27 @@ package final_project;
 import java.util.ArrayList;
 import java.util.List;
 
-import burlap.behavior.policy.GreedyQPolicy;
-import burlap.behavior.singleagent.planning.stochastic.montecarlo.uct.UCT;
-import burlap.oomdp.core.TerminalFunction;
-import burlap.oomdp.core.states.State;
-import burlap.oomdp.singleagent.RewardFunction;
-import burlap.oomdp.singleagent.pomdp.PODomain;
-import burlap.oomdp.statehashing.HashableStateFactory;
-import burlap.oomdp.statehashing.SimpleHashableStateFactory;
-import burlap.debugtools.DPrint;
 import rocksampledomain.RockSampleDG;
 import rocksampledomain.RockSampleInitialStateGenerator;
 import rocksampledomain.RockSampleRF;
 import rocksampledomain.RockSampleTF;
+import burlap.behavior.policy.BeliefPolicyToPOMDPPolicy;
+import burlap.behavior.policy.GreedyQPolicy;
+import burlap.behavior.singleagent.EpisodeAnalysis;
+import burlap.behavior.singleagent.planning.stochastic.montecarlo.uct.UCT;
+import burlap.behavior.singleagent.pomdp.BeliefPolicyAgent;
+import burlap.debugtools.DPrint;
+import burlap.oomdp.core.Domain;
+import burlap.oomdp.core.TerminalFunction;
+import burlap.oomdp.core.states.State;
+import burlap.oomdp.singleagent.RewardFunction;
+import burlap.oomdp.singleagent.pomdp.BeliefMDPGenerator;
+import burlap.oomdp.singleagent.pomdp.PODomain;
+import burlap.oomdp.singleagent.pomdp.SimulatedPOEnvironment;
+import burlap.oomdp.singleagent.pomdp.beliefstate.BeliefState;
+import burlap.oomdp.statehashing.HashableStateFactory;
+import burlap.oomdp.statehashing.SimpleHashableStateFactory;
+
 
 
 public class RunRockExperiments {
@@ -28,25 +36,42 @@ public class RunRockExperiments {
 	 */
 	public static double runUCT(int numTrajectories, int planningDepth) {
 
-		// Make the Rock Sample Domain.
+		// Make the Rock Sample Domain and the partially observable environment for the agent to act in.
 		int width = 7;
 		int height = 8;
-		int numRocks = 1;
+		int numRocks = 2;
 		RockSampleDG dg = new RockSampleDG(width, height, numRocks);
 		PODomain domain = (PODomain)dg.generateDomain();
 		RewardFunction rf = new RockSampleRF(width);
 		TerminalFunction tf = new RockSampleTF(width);
-		State initialBeliefState = RockSampleInitialStateGenerator.getInitialState(domain, width, height, numRocks);
-		domain.getStateEnumerator().findReachableStatesAndEnumerate(initialBeliefState);
+		State initialState = RockSampleInitialStateGenerator.getInitialState(domain, width, height, numRocks);
+		domain.getStateEnumerator().findReachableStatesAndEnumerate(initialState);
+		BeliefState initialBeliefState = RockSampleInitialStateGenerator.getInitialBeliefState(domain, initialState);
 		
-		// Run UCT.
+		// Turn domain into a Belief MDP.
+		BeliefMDPGenerator mdpGen = new BeliefMDPGenerator(domain);
+		Domain bdomain = mdpGen.generateDomain();
+		RewardFunction brf = new BeliefMDPGenerator.BeliefRF(domain, rf);
+				
+		SimulatedPOEnvironment penv = new SimulatedPOEnvironment(domain, rf, tf, initialState);
+		
+		
+		// Create and run UCT.
 		double gamma = 1.0;
 		int explorationBias = 60;
 		HashableStateFactory hf = new SimpleHashableStateFactory();
-		UCT planner = new UCT(domain, rf, tf, gamma, hf, planningDepth, numTrajectories, explorationBias);
-		GreedyQPolicy policy = planner.planFromState(initialBeliefState);
-		System.out.println(policy.evaluateBehavior(initialBeliefState, rf, tf, 100).actionSequence);
-		return sumRewards(policy.evaluateBehavior(initialBeliefState, rf, tf, 100).rewardSequence);
+		UCT planner = new UCT(bdomain, brf, tf, gamma, hf, planningDepth, numTrajectories, explorationBias);
+		GreedyQPolicy policy = planner.planFromState(initialBeliefState); // NOTE: Should be planning over belief state.
+		
+		BeliefPolicyToPOMDPPolicy pomdpPolicy = new BeliefPolicyToPOMDPPolicy(policy); 
+		
+		// Create agent using UCT's policy and evaluate the agent.
+		BeliefPolicyAgent agent = new BeliefPolicyAgent(domain, penv, pomdpPolicy);
+		agent.setBeliefState(initialBeliefState);
+		EpisodeAnalysis ea = agent.actUntilTerminal();
+		
+		System.out.println(ea.actionSequence);
+		return sumRewards(ea.rewardSequence);
 	}
 	
 	/**
@@ -84,12 +109,15 @@ public class RunRockExperiments {
 	public static void runUCTExperiments() {
 		int[] trajectories = new int[] {5000, 20000, 100000};
 		int[] planningDepths = new int[] {4, 6, 8, 10, 15, 20};
-		int numTrials = 25;
+		int numTrials = 1;
 		
 		List<Double> avgCumulativeRewards = new ArrayList<Double>();
 		
+		System.out.println("Running UCT Experiments...\n");
 		for (int i= 0; i < trajectories.length; i++) {
+			System.out.println("Trajectory: " + trajectories[i]);
 			for (int j = 0; j < planningDepths.length; j++) {
+				System.out.println("\tPlanning Depth: " + planningDepths[j]);
 				double result = runManyUCTAndAverageRewards(numTrials, trajectories[i], planningDepths[j]);
 				avgCumulativeRewards.add(result);
 			}
