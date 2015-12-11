@@ -1,12 +1,13 @@
-package final_project;
+package finalProject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rocksampledomain.RockSampleDG;
-import rocksampledomain.RockSampleInitialStateGenerator;
-import rocksampledomain.RockSampleRF;
-import rocksampledomain.RockSampleTF;
+import finalProject.Domain.RockSampleDG;
+import finalProject.Domain.RockSampleInitialStateGenerator;
+import finalProject.Domain.RockSampleRF;
+import finalProject.Domain.RockSampleTF;
+import finalProject.Domain.SimulatedBeliefPOEnvironment;
 import burlap.behavior.policy.BeliefPolicyToPOMDPPolicy;
 import burlap.behavior.policy.GreedyQPolicy;
 import burlap.behavior.singleagent.EpisodeAnalysis;
@@ -53,7 +54,7 @@ public class RunRockExperiments {
 		Domain bdomain = mdpGen.generateDomain();
 		RewardFunction brf = new BeliefMDPGenerator.BeliefRF(domain, rf);
 				
-		SimulatedPOEnvironment penv = new SimulatedPOEnvironment(domain, rf, tf, initialState);
+		SimulatedBeliefPOEnvironment penv = new SimulatedBeliefPOEnvironment(domain, rf, tf, initialState);
 		
 		
 		// Create and run UCT.
@@ -63,12 +64,13 @@ public class RunRockExperiments {
 		UCT planner = new UCT(bdomain, brf, tf, gamma, hf, planningDepth, numTrajectories, explorationBias);
 		GreedyQPolicy policy = planner.planFromState(initialBeliefState); // NOTE: Should be planning over belief state.
 		
-		BeliefPolicyToPOMDPPolicy pomdpPolicy = new BeliefPolicyToPOMDPPolicy(policy); 
+//		BeliefPolicyToPOMDPPolicy pomdpPolicy = new BeliefPolicyToPOMDPPolicy(policy); 
 		
 		// Create agent using UCT's policy and evaluate the agent.
-		BeliefPolicyAgent agent = new BeliefPolicyAgent(domain, penv, pomdpPolicy);
+		BeliefPolicyAgent agent = new BeliefPolicyAgent(domain, penv, policy);
 		agent.setBeliefState(initialBeliefState);
-		EpisodeAnalysis ea = agent.actUntilTerminal();
+		int maxStepsForRollout = 50;
+		EpisodeAnalysis ea = agent.actUntilTerminalOrMaxSteps(maxStepsForRollout);
 		
 		System.out.println(ea.actionSequence);
 		return sumRewards(ea.rewardSequence);
@@ -107,9 +109,9 @@ public class RunRockExperiments {
 	 * Runs all UCT experiments that generate results for the plot. 
 	 */
 	public static void runUCTExperiments() {
-		int[] trajectories = new int[] {5000, 20000, 100000};
-		int[] planningDepths = new int[] {4, 6, 8, 10, 15, 20};
-		int numTrials = 1;
+		int[] trajectories = new int[] {100, 1000};
+		int[] planningDepths = new int[] {4, 6, 8, 10};
+		int numTrials = 100;
 		
 		List<Double> avgCumulativeRewards = new ArrayList<Double>();
 		

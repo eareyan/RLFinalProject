@@ -1,4 +1,4 @@
-package rocksampledomain;
+package finalProject.Domain;
 
 import burlap.oomdp.core.TerminalFunction;
 import burlap.oomdp.core.states.State;

@@ -17,7 +17,7 @@ import burlap.oomdp.singleagent.pomdp.beliefstate.tabular.TabularBeliefState;
 public class RockSampleInitialStateGenerator {
 
 	public static State getInitialState(Domain d, int width, int height, int numRocks) {
-		Random rand = new Random(1);
+		Random rand = new Random();
 
 		// Randomize agent initial start.
 		int randomAgentX = rand.nextInt(width);
