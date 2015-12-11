@@ -9,7 +9,7 @@
 \hbadness=10000					% No "underfull hbox" messages.
 \makeatother					% Make '@' special again.
 \usepackage{fullpage}
-
+\usepackage{graphicx}
 %==============================================================================
 % Title.
 %==============================================================================
@@ -58,6 +58,13 @@ Idea: Discuss how we chose to implement our version of the experiments?
 \section{Results}
 
 Summary of their results, summary of our results.
+
+Cross validation with RandomMDP
+$$\begin{tabular}{cc}
+	\includegraphics[page=1,width=.5\textwidth]{../results/figure_2.pdf} &
+	\includegraphics[page=1,width=.41\textwidth]{../results/originalCV.pdf}\\
+	our results & their results \\
+\end{tabular}$$
 
 
 % --- SECTION: Reproducibility Discussion ---
