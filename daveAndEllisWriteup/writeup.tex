@@ -83,16 +83,13 @@ The initial state of the agent was underspecified. It was not stated whether the
 There was additional ambiguity regarding the the fidelity falloff of the $Check$ actions. We assumed the distance between the agent and a rock (which determines how unreliable the sensor is) is measured using Euclidean distance. We could have also reasonably used Manhattan distance since the agent cannot move diagonally. It was also unclear what the decay rate for exponential falloff was; we used $\frac{1}{2}$.
 
 \subsection{Ambiguity about UCT}
-\begin{itemize}
-\item Actual values of UCT exploration bias
-\item Gamma
-\item Treatment of POMDP with UCT (belief MDP?)
+
+Running UCT involves assigning several parameters that can dramatically alter results. For instance, the assignment of the exploration bias (i.e. the UCB parameter) will affect how UCT plans. The paper reports that their results were optimized over the set $10 * \exp{-2, -1, 0, 1, 2}$, for each data point on the graph. We fixed this parameter to be the maximum, $10 * exp(2) \sim 74$ for all experiments. Additionally, the value of the discount factor $\gamma$ is critical in determining behavior, especially in a domain like rock sample where there are large bursts of reward in the distance. We set $\gamma$ to be $0.9$ for our experiments, but after communicating with the authors, discovered there setting of $\gamma$ was 0.99 (although they were unsure). Lastly, there are several different ways one could imagine running UCT on a POMDP. We chose to convert the POMDP into a BeliefMDP and run UCT on the BeliefMDP, both during simulation and evaluation. The authors chose to sample ground states from their belief state during simulation but evaluate the performance of UCT by explicitly tracking the belief state using a generative model of the ground MDP. Several other components of the experimental setup were unclear in the paper, but the authors were kind enough to clarify these points over email.
+
 
 \subsection{General Computational Limits in RockSample}
 \label{sec: compLim}
 Their computer big and fast our computer small and slow.
-
-\end{itemize}
 
 
 
