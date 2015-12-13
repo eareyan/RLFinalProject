@@ -31,16 +31,21 @@ Note: Introduce the problem that they're solving, i.e. identify the main researc
 
 % Section: Rock Sample
 \subsection{RockSample}
-The RockSample domain consists of an agent acting in a partially observable GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy unique cells of the grid world some of which are good and some of which are bad. There are $5+k$ actions available to the agent, $\{North, East, South, West, Sample, Check_1 \ldots Check_k\}$. 
+The RockSample domain (see Figure \ref{fig: RockSample}) consists of an agent acting in a partially observable (typically 7 $\times$ 8) GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy $k$ cells of the grid world where some rocks are good and some rocks are bad. There are $5+k$ actions available to the agent, $\{North, East, South, West, Sample, Check_1 \ldots Check_k\}$. 
 
-If the agent calls $Sample$ while it is on top of a good rock it receives $+10$ reward and if it does so while on top of a bad rock it receives $-10$ reward. The agent also receives $+10$ reward if it runs of the east edge of the GridWorld, thereby terminating the episode.
+If the agent calls $Sample$ while it is on top of a good rock it receives $+10$ reward and if it does so while on top of a bad rock it receives $-10$ reward. The agent also receives $+10$ reward if it runs off the east edge of the GridWorld, thereby terminating the episode.
 
 The state space is fully observable to the agent except the goodness of rocks -- that is, it always knows its own position and that of all rocks, but not the goodness of the rocks. The $Check_i$ action provides the agent with noisy knowledge of the $i$th rock. If the agent is directly on top of $rock_i$ the $Check$ action returns the true goodness of the rock. As the agent gets further and further from the rock that it is $Check$ing, the fidelity of its sensor falls off exponentially, bottoming out at a $50\%$ probability of returning the true goodness of the rock it is $Check$ing. The agent's initial belief state is that each rock has a $50\%$ chance of being good.
 
+\begin{figure}[h]
+\label{fig: RockSample}
+\centering
+\includegraphics[page=1,width=.46\textwidth]{rock_sample_domain.png} \\
+\caption{An example rock sample domain}
+\end{figure}
+
 % Section: Randomized MDPs
 \subsection{Randomized MDPs}
-
-
 
 % --- SECTION: Hypotheses ---
 \section{Hypotheses}
@@ -66,11 +71,13 @@ Summary of their results, summary of our results.
 
 \subsection{Cross validation with RandomMDP}
 
+\begin{figure}
 $$\begin{tabular}{cc}
 	\includegraphics[page=1,width=.5\textwidth]{../results/figure_2.pdf} &
 	\includegraphics[page=1,width=.41\textwidth]{../results/originalCV.pdf}\\
 	our results & their results \\
 \end{tabular}$$
+\end{figure}
 
 \subsection{UCT Performance vs. Planning Depth on Rock Sample}
 
