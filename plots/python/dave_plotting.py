@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 
 # 50 Trajectories
@@ -15,7 +16,10 @@ plt.plot(xData, fiftyTrajData, label="50", marker="s", color="blue")
 
 plt.legend(title="Num Trajectories")
 
+font = {'family' : 'normal',
+        'size'   : 15}
 
+matplotlib.rc('font', **font)
 plt.xlim([0,20])
 plt.ylim([0,16])
 plt.xlabel('Planning Depth')

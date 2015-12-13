@@ -10,6 +10,7 @@
 \makeatother					% Make '@' special again.
 \usepackage{fullpage}
 \usepackage{graphicx}
+\usepackage{subfigure}
 %==============================================================================
 % Title.
 %==============================================================================
@@ -40,9 +41,11 @@ The state space is fully observable to the agent except the goodness of rocks --
 \begin{figure}[h]
 \label{fig: RockSample}
 \centering
-\includegraphics[page=1,width=.46\textwidth]{rock_sample_domain.png} \\
+\includegraphics[page=1,width=.42\textwidth]{rock_sample_domain.png} \\
 \caption{An example rock sample domain}
 \end{figure}
+
+
 
 % Section: Randomized MDPs
 \subsection{Randomized MDPs}
@@ -72,22 +75,29 @@ Summary of their results, summary of our results.
 \subsection{Cross validation with RandomMDP}
 
 \begin{figure}
-$$\begin{tabular}{cc}
-	\includegraphics[page=1,width=.5\textwidth]{../results/figure_2.pdf} &
-	\includegraphics[page=1,width=.41\textwidth]{../results/originalCV.pdf}\\
-	our results & their results \\
-\end{tabular}$$
+\centering
+\subfigure[Our results]{
+\includegraphics[page=1,width=.45\textwidth]{../results/figure_2.pdf}}
+\hspace{4mm}
+\subfigure[Their results]{
+\includegraphics[page=1,width=.35\textwidth]{../results/originalCV.pdf}}
+\caption{A comparison of our results and their results for Random MDP Experiments.}
 \end{figure}
+
+
+
 
 \subsection{UCT Performance vs. Planning Depth on Rock Sample}
 
-$$\begin{tabular}{cc}
-	\includegraphics[page=1,width=.50\textwidth]{../results/rock_sample_results.png} &
-	\includegraphics[page=1,width=.46\textwidth]{../results/figure_6.png} \\
-	our results & their results \\
-\end{tabular}$$
-
-
+\begin{figure}
+\centering
+\subfigure[Our results]{
+\includegraphics[page=1,width=.47\textwidth]{../results/rock_sample_results.png}}
+\hspace{1mm}
+\subfigure[Their results]{
+\includegraphics[page=1,width=.42\textwidth]{../results/figure_6.png}}
+\caption{A comparison of our results and their results for UCT Experiments.}
+\end{figure}
 
 
 % --- SECTION: Reproducibility Discussion ---
