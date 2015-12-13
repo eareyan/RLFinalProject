@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  13 DEC 2015 15:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  13 DEC 2015 16:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -60,34 +60,54 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
+(/usr/local/texlive/2014/texmf-dist/tex/latex/subfigure/subfigure.sty
+Package: subfigure 2002/03/15 v2.1.5 subfigure package
+\subfigtopskip=\skip44
+\subfigcapskip=\skip45
+\subfigcaptopadj=\dimen105
+\subfigbottomskip=\skip46
+\subfigcapmargin=\dimen106
+\subfiglabelskip=\skip47
+\c@subfigure=\count88
+\c@lofdepth=\count89
+\c@subtable=\count90
+\c@lotdepth=\count91
+
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2014/texmf-dist/tex/latex/subfigure/subfigure.cfg)
+\subfig@top=\skip48
+\subfig@bottom=\skip49
+)
 (./writeup.aux)
 \openout1 = `writeup.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 (/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count88
-\scratchdimen=\dimen105
+\scratchcounter=\count92
+\scratchdimen=\dimen107
 \scratchbox=\box26
-\nofMPsegments=\count89
-\nofMParguments=\count90
+\nofMPsegments=\count93
+\nofMParguments=\count94
 \everyMPshowfont=\toks15
-\MPscratchCnt=\count91
-\MPscratchDim=\dimen106
-\MPnumerator=\count92
-\makeMPintoPDFobject=\count93
+\MPscratchCnt=\count95
+\MPscratchDim=\dimen108
+\MPnumerator=\count96
+\makeMPintoPDFobject=\count97
 \everyMPtoPDFconversion=\toks16
 ) (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
@@ -138,96 +158,101 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 34.
+(Font)              <10.95> on input line 36.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 34.
+(Font)              <8> on input line 36.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 34.
+(Font)              <6> on input line 36.
 
 <rock_sample_domain.png, id=1, 511.9125pt x 449.68pt>
 File: rock_sample_domain.png Graphic file (type png)
 
 <use rock_sample_domain.png>
-Package pdftex.def Info: rock_sample_domain.png used on input line 43.
-(pdftex.def)             Requested size: 216.09045pt x 189.81805pt.
+Package pdftex.def Info: rock_sample_domain.png used on input line 45.
+(pdftex.def)             Requested size: 197.29623pt x 173.30916pt.
  [1
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./rock_
 sample_domain.png>]
-<../results/figure_2.pdf, id=16, page=1, 498.79301pt x 399.54117pt>
-File: ../results/figure_2.pdf Graphic file (type pdf)
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 58.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 58.
 
-<use ../results/figure_2.pdf, page 1>
-Package pdftex.def Info: ../results/figure_2.pdf, page1 used on input line 76.
-(pdftex.def)             Requested size: 234.8775pt x 188.14406pt.
+Overfull \hbox (1.22617pt too wide) in paragraph at lines 58--59
+\OT1/cmr/m/n/10.95 mented a Rock-Sam-ple do-main and code to gen-er-ate our plo
+ts us-ing the Brown-UMBC (BURLAP)[].[] 
+ []
 
-<../results/originalCV.pdf, id=17, page=1, 112.84479pt x 119.03802pt>
-File: ../results/originalCV.pdf Graphic file (type pdf)
-
-<use ../results/originalCV.pdf, page 1>
-Package pdftex.def Info: ../results/originalCV.pdf, page1 used on input line 77
-.
-(pdftex.def)             Requested size: 192.60127pt x 203.17204pt.
-
-<../results/rock_sample_results.png, id=18, 578.16pt x 433.62pt>
+<../results/rock_sample_results.png, id=16, 578.16pt x 433.62pt>
 File: ../results/rock_sample_results.png Graphic file (type png)
 
 <use ../results/rock_sample_results.png>
 Package pdftex.def Info: ../results/rock_sample_results.png used on input line 
-85.
-(pdftex.def)             Requested size: 234.8775pt x 176.15768pt.
+76.
+(pdftex.def)             Requested size: 220.78543pt x 165.58452pt.
 
-<../results/figure_6.png, id=19, 551.05875pt x 433.62pt>
+<../results/figure_6.png, id=17, 551.05875pt x 433.62pt>
 File: ../results/figure_6.png Graphic file (type png)
 
 <use ../results/figure_6.png>
-Package pdftex.def Info: ../results/figure_6.png used on input line 86.
-(pdftex.def)             Requested size: 216.09045pt x 170.03743pt.
+Package pdftex.def Info: ../results/figure_6.png used on input line 79.
+(pdftex.def)             Requested size: 197.29623pt x 155.24954pt.
 
-Overfull \hbox (5.21294pt too wide) detected at line 88
-[]
- []
+<../results/figure_2.pdf, id=18, page=1, 498.79301pt x 399.54117pt>
+File: ../results/figure_2.pdf Graphic file (type pdf)
 
-[2 <../results/figure_2.pdf> <../results/originalCV.pdf>] [3 <../results/rock_s
-ample_results.png> <../results/figure_6.png>]
-No file writeup.bbl.
-[4] (./writeup.aux) ) 
+<use ../results/figure_2.pdf, page 1>
+Package pdftex.def Info: ../results/figure_2.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 211.38832pt x 169.32417pt.
+
+<../results/originalCV.pdf, id=19, page=1, 112.84479pt x 119.03802pt>
+File: ../results/originalCV.pdf Graphic file (type pdf)
+
+<use ../results/originalCV.pdf, page 1>
+Package pdftex.def Info: ../results/originalCV.pdf, page1 used on input line 93
+.
+(pdftex.def)             Requested size: 164.41711pt x 173.44167pt.
+ [2] [3 <../results/rock_sample_results.png> <../results/figure_6.png> <../resu
+lts/figure_2.pdf> <../results/originalCV.pdf>] (./writeup.bbl) [4] (./writeup.a
+ux) ) 
 Here is how much of TeX's memory you used:
- 1533 strings out of 493117
- 22496 string characters out of 6135433
- 82040 words of memory out of 5000000
- 4997 multiletter control sequences out of 15000+600000
- 7888 words of font info for 28 fonts, out of 8000000 for 9000
+ 1712 strings out of 493117
+ 25004 string characters out of 6135433
+ 83900 words of memory out of 5000000
+ 5163 multiletter control sequences out of 15000+600000
+ 9447 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,11n,23p,1325b,304s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmbx9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmcsc10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfon
-ts/cmextra/cmex7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/ams
-fonts/cmextra/cmex9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmmi6.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmmi8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmmi9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr17.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6
-.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pf
-b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><
-/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
-usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></us
-r/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/
-local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/lo
-cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/loca
-l/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/
-texlive/2014/texmf-dist/fonts/type1/public/amsfonts/latxfont/lasy9.pfb></usr/lo
-cal/texlive/2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
-Output written on writeup.pdf (4 pages, 814071 bytes).
+ 38i,8n,24p,721b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.
+pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pf
+b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pf
+b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7
+.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cmextra/cm
+ex9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
+10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5
+.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.p
+fb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
+></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb><
+/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
+sr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr
+/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/lo
+cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local
+/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
+xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texli
+ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
+e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/
+2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/20
+14/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2014/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2014/texm
+f-dist/fonts/type1/public/amsfonts/latxfont/lasy9.pfb></usr/local/texlive/2014/
+texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
+Output written on writeup.pdf (4 pages, 834274 bytes).
 PDF statistics:
- 204 PDF objects out of 1000 (max. 8388607)
- 146 compressed objects within 2 object streams
+ 214 PDF objects out of 1000 (max. 8388607)
+ 155 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
