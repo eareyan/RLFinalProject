@@ -35,21 +35,19 @@ Below, we summarize each of these domains, describe our implementation of the ex
 % Section: Rock Sample
 \subsection{RockSample}
 \label{sec: rocksample}
-The RockSample domain (see Figure \ref{fig: RockSample}) consists of an agent acting in a 7 $\times$ 8 GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy $k$ cells of the grid world where some rocks are good and some rocks are bad. There are $5+k$ actions available to the agent:
-\begin{multline*}
-\{North, East, South, West, Sample, Check_1 \ldots Check_k\}
-\end{multline*}
+The RockSample domain (see Figure \ref{fig: RockSample}) consists of an agent acting in a 7 $\times$ 8 GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy $k$ cells of the grid world where some rocks are good and some rocks are bad. There are $5+k$ actions available to the agent: $North, East, South, West, Sample, \\
+Check_1 \ldots Check_k$.
 
 If the agent calls $Sample$ while it is on top of a good rock it receives $+10$ reward and if it does so while on top of a bad rock it receives $-10$ reward. The agent also receives $+10$ reward if it runs off the east edge of the GridWorld, thereby terminating the episode.
 
 The state space is fully observable to the agent except the goodness of rocks -- that is, it always knows its own position and that of all rocks, but not the goodness of the rocks. The $Check_i$ action provides the agent with noisy knowledge of the $i$th rock. If the agent is directly on top of $rock_i$ the $Check$ action returns the true goodness of the rock. As the agent gets further from the rock, the fidelity of its sensor falls off exponentially, bottoming out at a $50\%$ probability of returning the true goodness of the rock. The agent's initial belief state is that each rock has a $50\%$ chance of being good.
 
-\begin{figure}[h]
-\label{fig: RockSample}
-\centering
-\includegraphics[page=1,width=.37\textwidth]{rock_sample_domain.png} \\
-\caption{An example rock sample domain}
-\end{figure}
+%\begin{figure}[h]
+%\label{fig: RockSample}
+%\centering
+%\includegraphics[page=1,width=.20\textwidth]{rock_sample_domain.png} \\
+%\caption{An example Rock Sample domain}
+%\end{figure}
 
 % Section: Randomized MDPs
 \subsection{Randomized MDPs}
@@ -58,9 +56,9 @@ The state space is fully observable to the agent except the goodness of rocks --
 % --- SECTION: Experiments ---
 \section{Experiments}
 \subsection{Figure 6}
-Figure 6 of the paper tests the hypothesis that a shorter planning depth can lead to better behavior when planning since rollout behavior induces an inaccurate model of the MDP. The rollout algorithm the authors use is Upper Confidence Bound with Trees (UCT), a Monte Carlo algorithm which uses confidence bounds in the style of Upper Confidence Bound (UCB).
+Figure 6 of the paper tests the hypothesis that a shorter planning depth can lead to better behavior when planning since rollout behavior induces an inaccurate model of the MDP. The rollout algorithm the authors use is Upper Confidence Bound with Trees (UCT), introduced by~\cite{kocsis2006bandit}, a Monte Carlo algorithm which uses confidence bounds in the style of Upper Confidence Bound (UCB), introduced by~\cite{auer2002finite}.
 
-Experiments were conducted on the RockSample domain described in Section \ref{sec: rocksample}. We implemented a RockSample domain and code to generate our plots using the Brown-UMBC (BURLAP)\footnote{http://burlap.cs.brown.edu/}.\footnote{Our code is available at https://github.com/eareyan/RLFinalProject.}
+Experiments were conducted on the RockSample domain described in Section \ref{sec: rocksample}. We implemented a RockSample domain and code\footnote{https://github.com/eareyan/RLFinalProject.} to generate our plots using the Brown-UMBC (BURLAP)\footnote{http://burlap.cs.brown.edu/}.
 
 \subsection{Figure 7}
 
@@ -77,10 +75,10 @@ Our UCT results roughly capture the same trend that those of \cite{jiang2015depe
 \centering
 \subfigure[Our results]{
 \label{fig: UCTOurResults}
-\includegraphics[page=1,width=.44\textwidth]{../results/rock_sample_results.png}}
+\includegraphics[page=1,width=.23\textwidth]{../results/rock_sample_results.png}}
 \hspace{1mm}
 \subfigure[Their results]{
-\includegraphics[page=1,width=.40\textwidth]{../results/figure_6.png}}
+\includegraphics[page=1,width=.22\textwidth]{../results/figure_6.png}}
 \caption{A comparison of our results and their results for UCT Experiments.}
 \end{figure}
 
@@ -90,10 +88,10 @@ Our UCT results roughly capture the same trend that those of \cite{jiang2015depe
 \begin{figure}[h]
 \centering
 \subfigure[Our results]{
-\includegraphics[page=1,width=.40\textwidth]{../results/figure_2.pdf}}
+\includegraphics[page=1,width=.20\textwidth]{../results/figure_2.pdf}}
 \hspace{4mm}
 \subfigure[Their results]{
-\includegraphics[page=1,width=.30\textwidth]{../results/originalCV.pdf}}
+\includegraphics[page=1,width=.20\textwidth]{../results/originalCV.pdf}}
 \caption{A comparison of our results and their results for Random MDP Experiments.}
 \end{figure}
 
