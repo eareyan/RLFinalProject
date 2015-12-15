@@ -18,8 +18,8 @@
 \begin{frame}{Outline}
 \begin{enumerate}
 	\item What is the point?
-	\item RandomMDP Story
-	\item RandomMDP Results
+	\item Value Iteration Story
+	\item Value Iteration Results
 	\item UCT Story
 	\item UCT Results
 \end{enumerate}
@@ -39,19 +39,20 @@ Planning depth should be determined proportionally to model accuracy
 
 
 % Slide: RandomMDP Story
-\begin{frame}{RandomMDP Story}
+\begin{frame}{Value Iteration Story}
 The evaluation is performed on a MDP designed by the authors, called RandomMDP, specified as:\vspace{8mm}
 \begin{enumerate}
 \setlength\itemsep{1em}
 \item 10 states, 2 actions 
-\item Given state and action, choose next state uniformly random from 5 possible states
-\item Rewards $\sim$ uniform$(0,1)$, sample rewards have additive Gaussian noise
+\item For each state-action pair, the agent can transition to 5 possible next states chosen uniformly.
+The transition probability assigned to each next state  $\sim$ uniform$(0,1)$. 
+\item Rewards \mbox{$\sim$ uniform$(0,1)$}, sample rewards have additive Gaussian noise
 \item $\gamma_{eval} = 0.99$ and $\gamma_{plan} = 0.3,0.66, \text{and } 0.99$
 \end{enumerate}
 
 \end{frame}
 
-\begin{frame}{RandomMDP Evaluation approach}
+\begin{frame}{Value Iteration Evaluation approach}
 \begin{figure}
 \includegraphics[page=1,width=1\textwidth]{RandomMDPEvaluation.png}
 \end{figure}
@@ -60,7 +61,7 @@ The evaluation is performed on a MDP designed by the authors, called RandomMDP, 
 \end{frame}
 
 % Slide: RandomMDP Results
-\begin{frame}{RandomMDP Results}
+\begin{frame}{Value Iteration Results}
 \begin{tabular}{cc}
 our results & their results \\
 	\includegraphics[page=1,height=.55\textheight,width=.5\textwidth]{../results/figure_2.pdf} &
@@ -68,7 +69,7 @@ our results & their results \\
 \end{tabular}
 \end{frame}
 
-\begin{frame}{RandomMDP Reproducibility Discussion}
+\begin{frame}{Value Iteration Reproducibility Discussion}
 \begin{itemize}\setlength\itemsep{1em}
 \item Definition of RandomMDP
 \item Loss function 
