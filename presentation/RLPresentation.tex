@@ -18,13 +18,10 @@
 \begin{frame}{Outline}
 \begin{enumerate}
 	\item What is the point?
-	\item Background
 	\item RandomMDP Story
 	\item RandomMDP Results
 	\item UCT Story
-	\item Rock Sample Domain
 	\item UCT Results
-	\item UCT Reproducibility Discussion
 \end{enumerate}
 \end{frame}
 
@@ -32,6 +29,9 @@
 \begin{frame}{What is the Point?}
 \centering
 Planning Depth should be determined proportionally to model accuracy
+\begin{figure}
+\includegraphics[page=1,width=.5\textwidth]{WhatIsThePoint.png}
+\end{figure}
 %An Innacurate
 %With limited data 
 %With an inaccurate model use a low planning Depth
@@ -40,13 +40,21 @@ Planning Depth should be determined proportionally to model accuracy
 
 % Slide: RandomMDP Story
 \begin{frame}{RandomMDP Story}
-The evaluation is performed on a MDP designed by the authors, called RandomMDP, specified as:
+The evaluation is performed on a MDP designed by the authors, called RandomMDP, specified as:\vspace{8mm}
 \begin{enumerate}
-\item 10 states, 2 actions
-\item choose next state uniformly random from 5 possible states
-\item rewards $~$ uniform(0,1), sample rewards have additive Gaussian noise
+\setlength\itemsep{1em}
+\item 10 states, 2 actions 
+\item Given state and action, choose next state uniformly random from 5 possible states
+\item Rewards $\sim$ uniform$(0,1)$, sample rewards have additive Gaussian noise
+\item $\gamma_{eval} = 0.99$ and $\gamma_{plan} = 0.3,0.66, \text{and } 0.99$
 \end{enumerate}
-Evaluation approach:
+
+\end{frame}
+
+\begin{frame}{RandomMDP Evaluation approach}
+\begin{figure}
+\includegraphics[page=1,width=1\textwidth]{RandomMDPEvaluation.png}
+\end{figure}
 
 
 \end{frame}
@@ -60,6 +68,13 @@ our results & their results \\
 \end{tabular}
 \end{frame}
 
+\begin{frame}{RandomMDP Reproducibility Discussion}
+\begin{itemize}\setlength\itemsep{1em}
+\item Definition of RandomMDP
+\item Loss function 
+\item Plot readability 
+\end{itemize}
+\end{frame}
 
 
 % Slide: UCT Story
@@ -103,7 +118,7 @@ Experiments:
 
 % Slide: Reproducbility Discussion
 \begin{frame}{UCT Reproducibility Discussion}
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{1em}
 \item Ambiguities of UCT
 \item Ambiguities of Rock Sample
 \item Computational Limitations
