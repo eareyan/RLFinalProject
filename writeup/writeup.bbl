@@ -1,0 +1,20 @@
+\begin{thebibliography}{1}
+
+\bibitem{jiang2015dependence}
+Nan Jiang, Alex Kulesza, Satinder Singh, and Richard Lewis.
+\newblock The dependence of effective planning horizon on model accuracy.
+\newblock In {\em Proceedings of the 2015 International Conference on
+  Autonomous Agents and Multiagent Systems}, pages 1181--1189. International
+  Foundation for Autonomous Agents and Multiagent Systems, 2015.
+
+\bibitem{kocsis2006bandit}
+Levente Kocsis and Csaba Szepesv{\'a}ri.
+\newblock Bandit based monte-carlo planning.
+\newblock In {\em Machine Learning: ECML 2006}, pages 282--293. Springer, 2006.
+
+\bibitem{auer2002finite}
+Peter Auer, Nicolo Cesa-Bianchi, and Paul Fischer.
+\newblock Finite-time analysis of the multiarmed bandit problem.
+\newblock {\em Machine learning}, 47(2-3):235--256, 2002.
+
+\end{thebibliography}

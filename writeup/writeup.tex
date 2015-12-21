@@ -4,7 +4,7 @@
 
 \documentclass[11pt,twocolumn]{article}
 \makeatletter					% Make '@' accessible.
-\pagestyle{myheadings}				% We do our own page headers.
+%\pagestyle{myheadings}				% We do our own page headers.
 \skip\footins=4ex				% Space above first footnote.
 \hbadness=10000					% No "underfull hbox" messages.
 \makeatother					% Make '@' special again.
@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{subfigure}
+\usepackage{float}
 %==============================================================================
 % Title.
 %==============================================================================
@@ -32,29 +33,32 @@ Below, we summarize each of these domains, describe our implementation of the ex
 % --- SECTION: Domains ---
 \section{Domains}
 
+In this section we discussed the two domains used to set up experiments. 
 % Section: Rock Sample
 \subsection{RockSample}
 \label{sec: rocksample}
-The RockSample domain (see Figure \ref{fig: RockSample}) consists of an agent acting in a 7 $\times$ 8 GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy $k$ cells of the grid world where some rocks are good and some rocks are bad. There are $5+k$ actions available to the agent: $North, East, South, West, Sample, \\
+The RockSample domain consists of an agent acting in a 7 $\times$ 8 GridWorld bounded by walls on the west, south and north sides. There are $k$ rocks that occupy $k$ cells of the grid world where some rocks are good and some rocks are bad. There are $5+k$ actions available to the agent: $North, East, South, West, Sample, \\
 Check_1 \ldots Check_k$.
 
 If the agent calls $Sample$ while it is on top of a good rock it receives $+10$ reward and if it does so while on top of a bad rock it receives $-10$ reward. The agent also receives $+10$ reward if it runs off the east edge of the GridWorld, thereby terminating the episode.
 
 The state space is fully observable to the agent except the goodness of rocks -- that is, it always knows its own position and that of all rocks, but not the goodness of the rocks. The $Check_i$ action provides the agent with noisy knowledge of the $i$th rock. If the agent is directly on top of $rock_i$ the $Check$ action returns the true goodness of the rock. As the agent gets further from the rock, the fidelity of its sensor falls off exponentially, bottoming out at a $50\%$ probability of returning the true goodness of the rock. The agent's initial belief state is that each rock has a $50\%$ chance of being good.
 
-%\begin{figure}[h]
-%\label{fig: RockSample}
-%\centering
-%\includegraphics[page=1,width=.20\textwidth]{rock_sample_domain.png} \\
-%\caption{An example Rock Sample domain}
-%\end{figure}
-
 % Section: Randomized MDPs
-\subsection{Randomized MDPs}
+\subsection{Random MDP}
+\begin{figure}[H]
+\includegraphics[page=1,width=.5\textwidth]{RandomMDPEvaluation.png}
+\caption{RandomMDP Evaluation Process}
+\end{figure}
+The authors designed the and MDP which they called Random MDP. This MDP has 10 states, and 2 actions. 
+For each state-action pair, the agent can transition to 5 possible next states chosen uniformly and without replacement.
+The transition probability assigned to each next state comes from uniform $(0,1)$ distribution. Rewards are also uniformly distributed between $(0,1)$, however, sample rewards have additive Gaussian noise. To evaluate the MDP there are 2 notions of gamma. The first is $\gamma_{eval} = 0.99$, which is given by the MDP definition. The second is $\gamma_{plan} = 0.3,0.66, \text{and } 0.99$ which was used to plan on this MDP. Figure 1 shows the process by which the authors calculated the loss of a random MDP using both $\gamma_{eval}$ and $\gamma_{plan}$.
+
 
 
 % --- SECTION: Experiments ---
 \section{Experiments}
+In this section we will describe the experiments conducted by the authors.
 \subsection{Figure 6}
 Figure 6 of the paper tests the hypothesis that a shorter planning depth can lead to better behavior when planning since rollout behavior induces an inaccurate model of the MDP. The rollout algorithm the authors use is Upper Confidence Bound with Trees (UCT), introduced by~\cite{kocsis2006bandit}, a Monte Carlo algorithm which uses confidence bounds in the style of Upper Confidence Bound (UCB), introduced by~\cite{auer2002finite}.
 
@@ -62,16 +66,15 @@ Experiments were conducted on the RockSample domain described in Section \ref{se
 
 \subsection{Figure 7}
 
-Idea: Discuss how we chose to implement our version of the experiments and the hypothesis being tested?
-
+The purpose of this figure is to make two points: 1) with a model estimated from insufficient experience size it is better to use a planning horizon shorter than the true horizon and 2) performing a cross validation is a reasonable method to find a good gamma relative to the amount of experience. 
 % --- SECTION: Results ---
 \section{Results}
-
+In this section we report the results we get while reproducing the experiments.
 
 \subsection{UCT Performance vs. Planning Depth on Rock Sample}
 Our UCT results roughly capture the same trend that those of \cite{jiang2015dependence}. The trend which we hope to show is an increase in planning efficacy using an intermediate -- rather than very low or very high -- planning depth for UCT. Two of our three curves, UCT with 50 and 200 trajectories, demonstrated exactly this trend while our third curve, UCT with 1000 trajectories, performed equally well with intermediate and high planning depths. See Figure \ref{fig: UCTOurResults} for complete results. We conjecture that the discrepancies in our results are symptoms of the differences in our experimental setup -- see Section \ref{sec: repDisc} for more detail.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \subfigure[Our results]{
 \label{fig: UCTOurResults}
@@ -85,7 +88,8 @@ Our UCT results roughly capture the same trend that those of \cite{jiang2015depe
 % Subsection: Cross validation with RandomMDP
 \subsection{Cross validation with RandomMDP}
 
-\begin{figure}[h]
+Our attempts to reproduce figure 7 of the original paper is shown in figure 3 of the present document. 
+\begin{figure}[H]
 \centering
 \subfigure[Our results]{
 \includegraphics[page=1,width=.20\textwidth]{../results/figure_2.pdf}}
@@ -95,6 +99,7 @@ Our UCT results roughly capture the same trend that those of \cite{jiang2015depe
 \caption{A comparison of our results and their results for Random MDP Experiments.}
 \end{figure}
 
+The overall shape of our results reflect that of the paper. Notice that with fewer amount of experience is better to use a lower gamma while using a higher gamma is preferred with sufficient experience. Also, notice that cross validation can offer a good performance by setting gamma as a function of the amount of experience. 
 % --- SECTION: Reproducibility Discussion ---
 \section{Reproducibility Discussion}
 \label{sec: repDisc}
@@ -121,8 +126,13 @@ The full barrage of experiments used by \cite{jiang2015dependence} is extremely 
 We were forced to dramatically reduce the complexity of these parameters. We ran 10 trials per data point, with 100$\times$ fewer trajectories with only 2 rocks which leads to ~200 states over which belief state updates must be performed. Even after a series of optimizations for BURLAP, it still took over 5 hours to fully gather our data.
 
 
+\section{Personal communication with the authors}
+In order to clarify some of the implementation details, we communicated with the authors via email. 
+The authors were very receptive to our communications and answer questions to the best of their abilities. In particular, they sent their code (written in Matlab) that they used
+to generate results. Unfortunately the code was very hard to read and in some cases it raised even more questions that it answered. 
+
 % --- BIBLIOGRAPHY ---
-\bibliographystyle{acm}
+\bibliographystyle{unsrt}
 \bibliography{lsdm_final}
 
 \end{document}
